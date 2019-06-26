@@ -1,0 +1,142 @@
+<template>
+    <div class="form">
+        <el-form ref="form" :model="form" label-width="120px">
+            <el-col :span="11">
+                <el-form-item label="바코드 번호">
+                    <el-input
+                            ref="barcode"
+                            v-model="form.barcode"
+                              @keyup.enter.native="getInformation"
+                            @focus="onFocus()"
+                            @blur="focused--"
+                            v-on:keydown.native="keyMonitor"></el-input>
+                </el-form-item>
+            </el-col>
+            <el-col :span="11">
+                <el-form-item label="상품 이름">
+                    <el-input v-model="form.name"></el-input>
+                </el-form-item>
+            </el-col>
+            <el-col :span="11">
+                <el-form-item label="재고 금액">
+                    <el-input v-model="form.stockPrice"></el-input>
+                </el-form-item>
+            </el-col>
+            <el-col :span="11">
+                <el-form-item label="단 가">
+                    <el-input v-model="form.price"></el-input>
+                </el-form-item>
+            </el-col>
+            <el-col :span="11">
+                <el-form-item label="재 고">
+                    <el-input v-model=  "form.stock"></el-input>
+                </el-form-item>
+            </el-col>
+            <el-col :span="11">
+                <el-form-item label="판매 가격" v-if="mode">
+                    <el-input v-model="form.actualPrice"></el-input>
+                </el-form-item>
+            </el-col>
+        </el-form>
+        <el-col :span="21">
+            <el-switch
+                    v-model="mode"
+                    active-text="판매"
+                    inactive-text="수정">
+            </el-switch>
+        </el-col>
+        <el-col :span="3">
+            <el-button type="primary" @click="onClick">확인</el-button>
+        </el-col>
+    </div>
+</template>
+
+<script>
+    export default {
+        name: "BarcodeForm",
+        mounted() {
+        },
+        data() {
+            return {
+                form: {
+                    barcode: '',
+                    name: '',
+                    stockPrice: 0,
+                    price: 0,
+                    stock: 0,
+                    actualPrice: 0
+                },
+                mode: true,
+                enterPressed: false,
+                focused: 0
+            }
+        },
+        methods: {
+            onFocus() {
+                this.$refs.barcode.focus();
+            },
+            onClick() {
+                if (this.mode) {
+                    this.$axios.post('/api/sell', this.form)
+                        .then((response) => {
+                            this.form.name = response.data.name;
+                            this.form.stockPrice = response.data.stockPrice;
+                            this.form.price = response.data.price;
+                            this.form.stock = response.data.stock;
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                }
+                else {
+                    this.$axios.post('/api/update', this.form)
+                        .then((response) => {
+                            this.form.name = response.data.name;
+                            this.form.stockPrice = response.data.stockPrice;
+                            this.form.price = response.data.price;
+                            this.form.stock = response.data.stock;
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        })
+                }
+            },
+            keyMonitor(event) {
+                console.log('Key pressed event');
+                if (this.enterPressed) {
+                    this.form.barcode = '';
+                    this.enterPressed = false;
+                }
+                if (event.key === "Enter") {
+                    this.enterPressed = true;
+                }
+            },
+            getInformation() {
+                if (this.mode === false) {
+                    this.$axios.post('/api/add', this.form)
+                        .then((response) => {
+                            this.form.name = response.data.name;
+                            this.form.stockPrice = response.data.stockPrice;
+                            this.form.price = response.data.price;
+                            this.form.stock = response.data.stock;
+                        })
+                }
+                else {
+                    this.$axios.post('/api/select', this.form)
+                        .then((response) => {
+                            this.form.name = response.data.name;
+                            this.form.stockPrice = response.data.stockPrice;
+                            this.form.price = response.data.price;
+                            this.form.stock = response.data.stock;
+                        })
+                        .then((err) => {
+                            console.log(err);
+                        })
+                }
+            }
+        }
+    }
+</script>
+
+<style scoped>
+</style>
