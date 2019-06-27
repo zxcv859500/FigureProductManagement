@@ -45,6 +45,9 @@
                             barcode: element.barcode,
                             actualPrice: element.actualPrice
                         };
+                        if (!isNaN(newData.actualPrice)) {
+                            newData.actualPrice = newData.actualPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                        }
                         this.tableData.push(newData);
                     })
                 })
