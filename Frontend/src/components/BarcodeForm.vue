@@ -100,6 +100,8 @@
                             console.log(err);
                         })
                 }
+
+                this.form.actualPrice = 0;
             },
             keyMonitor(event) {
                 console.log('Key pressed event');
@@ -119,6 +121,13 @@
                             this.form.stockPrice = response.data.stockPrice;
                             this.form.price = response.data.price;
                             this.form.stock = response.data.stock;
+
+                            if (!isNaN(this.form.price)) {
+                                this.form.price = this.form.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }
+                            if (!isNaN(this.form.stockPrice)) {
+                                this.form.stockPrice = this.form.stockPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }
                         })
                 }
                 else {
@@ -128,6 +137,13 @@
                             this.form.stockPrice = response.data.stockPrice;
                             this.form.price = response.data.price;
                             this.form.stock = response.data.stock;
+
+                            if (!isNaN(this.form.price)) {
+                                this.form.price = this.form.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }
+                            if (!isNaN(this.form.stockPrice)) {
+                                this.form.stockPrice = this.form.stockPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }
                         })
                         .then((err) => {
                             console.log(err);

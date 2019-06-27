@@ -70,6 +70,12 @@
                             stock: element.stock,
                             stockPrice: element.stockPrice
                         };
+                        if (!isNaN(newData.price)) {
+                            newData.price = newData.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                        }
+                        if (!isNaN(newData.stockPrice)) {
+                            newData.stockPrice = newData.stockPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                        }
                         this.tableData.push(newData);
                     })
                 })
