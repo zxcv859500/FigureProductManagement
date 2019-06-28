@@ -23,10 +23,10 @@ router.post('/api/sell', function(req, res, next) {
     controller.sell.insert(req, res, row);
 });
 
-router.post('/api/select', function(req, res, next) {
+router.post('/api/select', function(req, res, next) {   
     const row = {
         barcode: req.body.barcode
-    };
+    };      
     console.log(row.barcode);
     controller.product.select(req, res, row);
 });
@@ -52,6 +52,15 @@ router.post('/api/update', function(req, res, next) {
 
 router.get('/api/sell/list', function(req, res, next) {
     controller.sell.list(req, res);
+});
+
+router.post('/api/sell/datelist', function(req, res, next) {
+    const row = {
+        startDate: req.body.startDate,
+        finalDate: req.body.finalDate
+    }
+    console.log(row);
+    controller.sell.dateList(req, res, row);
 });
 
 module.exports = router;
