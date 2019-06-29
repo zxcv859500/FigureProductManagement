@@ -1,5 +1,8 @@
 <template>
     <div class="sell-history">
+        <div class="sum-price">
+            실제 합산 가격: {{ sumPrice }}
+        </div>
         <el-date-picker
             v-model="date"
             type="daterange"
@@ -79,6 +82,16 @@
                 this.compareDate[0] = Date.parse(this.date[0].toLocaleDateString());
                 this.compareDate[1] = Date.parse(this.date[1].toLocaleDateString()) + 32400000;
                 this.showData = this.tableData.filter(data => !this.compareDate || (Date.parse(data.date) >= this.compareDate[0] && Date.parse(data.date) <= this.compareDate[1]))
+            }
+        },
+        computed: {
+            sumPrice: function() {
+                let result = 0;
+                this.showData.forEach((element) => {
+                    const price = Number(element.actualPrice.replace(",", ""));
+                    result += price;
+                })
+                return result.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             }
         }
     }

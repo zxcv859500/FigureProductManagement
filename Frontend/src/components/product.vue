@@ -1,5 +1,8 @@
 <template>
     <div class="product">
+        <div class="sum-price">
+            합산 가격 : {{ sumPrice }}
+        </div>
         <el-table
             :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase())
             || data.barcode.includes(search.toLowerCase()))"
@@ -55,7 +58,8 @@
         data() {
             return {
                 tableData: [],
-                search: ''
+                search: '',
+                sumPrice: 0
             }
         },
         mounted() {
@@ -70,6 +74,7 @@
                             stock: element.stock,
                             stockPrice: element.stockPrice
                         };
+                        this.sumPrice += newData.stockPrice;
                         if (!isNaN(newData.price)) {
                             newData.price = newData.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                         }
@@ -78,6 +83,7 @@
                         }
                         this.tableData.push(newData);
                     })
+                    this.sumPrice = this.sumPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 })
                 .catch((err) => {
                     console.log(err);
