@@ -1,4 +1,4 @@
-const models = require('../models/index');
+    const models = require('../models/index');
 
 module.exports = {
     list(req, res) {
@@ -74,6 +74,26 @@ module.exports = {
                 res.send(err);
             })
     },
+    upsert(req, res, row) {
+        models.product.findOne({
+            where: { barcode: row.barcode }
+        })
+        .then((result) => {
+            if (!result) {
+                this.insert(req, res, row);
+            } else {
+                models.product.update({
+                    name: row.name,
+                    price: row.price,
+                    stock: row.stock,
+                    stockPrice: row.price * row.stock
+                }, { where: { barcode: row.barcode }})
+            }
+        })
+        .catch((err) => {
+            res.send(err);
+        })
+    },
     insert(req, res, row) {
         models.product.create({
             barcode: row.barcode,
@@ -90,6 +110,17 @@ module.exports = {
                     .catch((err) => {
                         res.send(err);
                     })
+            })
+            .catch((err) => {
+                res.send(err);
+            })
+    },
+    delete(req, res, row) {
+        models.product.destroy({
+            where: { id: row.id }
+        })
+            .then(() => {
+                res.status(200).send();
             })
             .catch((err) => {
                 res.send(err);

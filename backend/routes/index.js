@@ -51,11 +51,16 @@ router.post('/api/update', function(req, res, next) {
         barcode: req.body.barcode,
         name: req.body.name,
         price: req.body.price,
-        stockPrice: req.body.price * req.body.stock,
         stock: req.body.stock
     };
 
-    controller.product.insert(req, res, row);
+    if (row.barcode === '' || row.name === '' || row.price === '' || row.stock === '') {
+        res.status(500).send("Empty item error");
+    }
+
+    row.price = row.price.replace(',', '');
+
+    controller.product.upsert(req, res, row);
 });
 
 router.get('/api/sell/list', function(req, res, next) {
@@ -66,9 +71,16 @@ router.post('/api/sell/datelist', function(req, res, next) {
     const row = {
         startDate: req.body.startDate,
         finalDate: req.body.finalDate
-    }
+    };
     console.log(row);   
     controller.sell.dateList(req, res, row);
+});
+
+router.post('/api/product/delete', function(req, res, next) {
+    const row = {
+        id: req.body.id
+    };
+    controller.product.delete(req, res, row);
 });
 
 module.exports = router;

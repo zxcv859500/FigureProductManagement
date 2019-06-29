@@ -63,35 +63,53 @@
             }
         },
         mounted() {
-            this.$axios.get('/api/list')
-                .then((res) => {
-                    this.tableData = [];
-                    res.data.forEach((element) => {
-                        const newData = {
-                            name: element.name,
-                            barcode: element.barcode,
-                            price: element.price,
-                            stock: element.stock,
-                            stockPrice: element.stockPrice
-                        };
-                        this.sumPrice += newData.stockPrice;
-                        if (!isNaN(newData.price)) {
-                            newData.price = newData.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                        }
-                        if (!isNaN(newData.stockPrice)) {
-                            newData.stockPrice = newData.stockPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                        }
-                        this.tableData.push(newData);
-                    })
-                    this.sumPrice = this.sumPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
+            this.load();
         },
         methods: {
             handleDelete(index, row) {
-
+                const data = {
+                    id: row.id
+                };
+                this.$axios.post('/api/product/delete', data)
+                    .then(() => {
+                        this.load();
+                        this.$message({
+                            message: "정상적으로 삭제되었습니다.",
+                            type: 'success'
+                        })
+                    })
+                    .catch((err) => {
+                        this.$message.error("삭제에 실패했습니다. ", err);
+                    })
+            },
+            load() {
+                this.sumPrice = 0;
+                this.$axios.get('/api/list')
+                    .then((res) => {
+                        this.tableData = [];
+                        res.data.forEach((element) => {
+                            const newData = {
+                                id: element.id,
+                                name: element.name,
+                                barcode: element.barcode,
+                                price: element.price,
+                                stock: element.stock,
+                                stockPrice: element.stockPrice
+                            };
+                            this.sumPrice += newData.stockPrice;
+                            if (!isNaN(newData.price)) {
+                                newData.price = newData.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                            }
+                            if (!isNaN(newData.stockPrice)) {
+                                newData.stockPrice = newData.stockPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                            }
+                            this.tableData.push(newData);
+                        })
+                        this.sumPrice = this.sumPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
             }
         }
     }

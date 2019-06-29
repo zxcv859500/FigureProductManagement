@@ -76,7 +76,6 @@
                 this.$refs.barcode.focus();
             },
             onClick() {
-                this.$message("actualPrice: " + this.form.actualPrice);
                 if (this.mode) {
                     this.$axios.post('/api/sell', this.form)
                         .then((response) => {
@@ -93,8 +92,7 @@
                         .catch((err) => {
                             this.$message.error("판매에 실패했습니다. " + err);
                         });
-                }
-                else {
+                } else {
                     this.$axios.post('/api/update', this.form)
                         .then((response) => {
                             this.form.name = response.data.name;
@@ -108,12 +106,11 @@
                             this.form.actualPrice = '';
                         })
                         .catch((err) => {
-                            this.$message.error("수정에 실패했습니다.");
+                            this.$message.error("수정에 실패했습니다." + err);
                         })
                 }
             },
             keyMonitor(event) {
-                console.log('Key pressed event');
                 if (this.enterPressed) {
                     this.form.barcode = '';
                     this.enterPressed = false;
