@@ -9,7 +9,7 @@
             @change="onChange">
         </el-date-picker>
         <el-table
-            :data="tableData"
+            :data="showData"
             :default-sort = "{ prop: 'date', order: 'descending' }">
             <el-table-column
                 prop="date"
@@ -42,25 +42,20 @@
         data() {
             return {
                 tableData: [],
-                date: ''
+                date: '',
+                compareDate: [],
+                showData: []
             }
         },
         mounted() {
+            this.compareDate[0] = Date.parse(new Date().toLocaleDateString());
+            this.compareDate[1] = this.compareDate[0] + 32400000;
             this.load();
+            this.showData = this.tableData.filter(data => !this.compareDate || (Date.parse(data.date) >= this.compareDate[0] && Date.parse(data.date) <= this.compareDate[1]))
         },
         methods: {
             load() {
-                let startDate = new Date(),
-                        finalDate = new Date();
-                if (this.date !== '') {
-                    startDate = this.date[0];
-                    finalDate = this.date[1];
-                }
-                const row = {
-                    startDate: startDate.toLocaleDateString(),
-                    finalDate: finalDate.toLocaleDateString()
-                };
-                this.$axios.post('/api/sell/datelist', row)
+                this.$axios.get('/api/sell/list')
                     .then((res) => {
                         this.tableData = [];
                         res.data.forEach((element) => {
@@ -81,7 +76,9 @@
                     })
             },
             onChange() {
-                this.load();
+                this.compareDate[0] = Date.parse(this.date[0].toLocaleDateString());
+                this.compareDate[1] = Date.parse(this.date[1].toLocaleDateString()) + 32400000;
+                this.showData = this.tableData.filter(data => !this.compareDate || (Date.parse(data.date) >= this.compareDate[0] && Date.parse(data.date) <= this.compareDate[1]))
             }
         }
     }
