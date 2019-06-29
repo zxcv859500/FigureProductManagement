@@ -61,10 +61,10 @@
                 form: {
                     barcode: '',
                     name: '',
-                    stockPrice: 0,
-                    price: 0,
-                    stock: 0,
-                    actualPrice: 0
+                    stockPrice: '',
+                    price: '',
+                    stock: '',
+                    actualPrice: ''
                 },
                 mode: true,
                 enterPressed: false,
@@ -76,6 +76,7 @@
                 this.$refs.barcode.focus();
             },
             onClick() {
+                this.$message("actualPrice: " + this.form.actualPrice);
                 if (this.mode) {
                     this.$axios.post('/api/sell', this.form)
                         .then((response) => {
@@ -83,9 +84,14 @@
                             this.form.stockPrice = response.data.stockPrice;
                             this.form.price = response.data.price;
                             this.form.stock = response.data.stock;
+                            this.$message({
+                                message: "정상적으로 판매되었습니다.",
+                                type: 'success'
+                            });
+                            this.form.actualPrice = '';
                         })
                         .catch((err) => {
-                            console.log(err);
+                            this.$message.error("판매에 실패했습니다. " + err);
                         });
                 }
                 else {
@@ -95,13 +101,16 @@
                             this.form.stockPrice = response.data.stockPrice;
                             this.form.price = response.data.price;
                             this.form.stock = response.data.stock;
+                            this.$message({
+                                message: "정상적으로 수정되었습니다.",
+                                type: 'success'
+                            });
+                            this.form.actualPrice = '';
                         })
                         .catch((err) => {
-                            console.log(err);
+                            this.$message.error("수정에 실패했습니다.");
                         })
                 }
-
-                this.form.actualPrice = 0;
             },
             keyMonitor(event) {
                 console.log('Key pressed event');

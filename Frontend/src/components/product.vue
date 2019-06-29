@@ -18,9 +18,9 @@
                 column-key="barcode">
             </el-table-column>
             <el-table-column
-                prop="price"
-                label="단가"
-                column-key="price">
+                prop="stockPrice"
+                label="총 단가"
+                column-key="stockPrice">
             </el-table-column>
             <el-table-column
                 prop="stock"
@@ -29,9 +29,9 @@
                 sortable>
             </el-table-column>
             <el-table-column
-                prop="stockPrice"
-                label="총 단가"
-                column-key="stockPrice">
+                prop="price"
+                label="단가"
+                column-key="price">
             </el-table-column>
             <el-table-column
                 align="right">
@@ -98,5 +98,7 @@
 </script>
 
 <style scoped>
-
+    .sum-price {
+        color: red;
+    }
 </style>

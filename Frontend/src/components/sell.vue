@@ -98,5 +98,8 @@
 </script>
 
 <style scoped>
-
+    .sum-price {
+        color: red;
+        margin-bottom: 20px;
+    }
 </style>

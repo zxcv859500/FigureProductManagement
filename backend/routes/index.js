@@ -19,8 +19,16 @@ router.post('/api/sell', function(req, res, next) {
         date: new Date()
     };
 
-    controller.product.sell(req, res, row);
-    controller.sell.insert(req, res, row);
+    if (!row.barcode) {
+        res.status(500).send("Barcode empty");
+        console.log("Barcode empty");
+    } else if (row.actualPrice === 0 || row.actualPrice === '') {
+        res.status(500).send("actualPrice empty");
+        console.log("actaulPrice empty: ", row.actualPrice);
+    } else {
+        controller.product.sell(req, res, row);
+        controller.sell.insert(req, res, row);
+    }
 });
 
 router.post('/api/select', function(req, res, next) {   
@@ -59,7 +67,7 @@ router.post('/api/sell/datelist', function(req, res, next) {
         startDate: req.body.startDate,
         finalDate: req.body.finalDate
     }
-    console.log(row);
+    console.log(row);   
     controller.sell.dateList(req, res, row);
 });
 
