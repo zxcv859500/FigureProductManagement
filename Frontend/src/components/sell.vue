@@ -101,7 +101,8 @@
                 let result = 0;
                 this.showData.forEach((element) => {
                     const price = Number(element.actualPrice.replace(/,/gi, ""));
-                    result += price;
+                    if (!isNaN(price))
+                        result += price;
                 })
                 return result.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             }
