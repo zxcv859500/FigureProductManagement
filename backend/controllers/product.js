@@ -11,37 +11,40 @@ module.exports = {
             });
     },
     select(req, res, row) {
-        models.product.findOne({where: {barcode: row.barcode}})
+        return models.product.findOne({where: {barcode: row.barcode}})
             .then((result) => {
                 res.send(result);
             })
             .catch((err) => {
                 res.send(err);
             })
-    }
-    ,
+    },
     sell(req, res, row){
         models.product.findOne({where: { barcode: row.barcode}})
             .then((result) => {
                 const stock = result.stock;
                 const price = result.price;
-                models.product.update({
-                        stock: stock - 1,
-                        stockPrice: (stock - 1) * price
-                    },
-                    {where: { barcode: row.barcode }})
-                    .then(() => {
-                        models.product.findOne({where: { barcode: row.barcode }})
-                            .then((result) => {
-                                res.send(result);
-                            })
-                            .catch((err) => {
-                                res.send(err);
-                            })
-                    })
-                    .catch((err) => {
-                        res.send(err);
-                    })
+                if (stock <= 0) {
+                    res.status(500).send(new Error("stock can't be less than 0"));
+                } else {
+                    models.product.update({
+                            stock: stock - 1,
+                            stockPrice: (stock - 1) * price
+                        },
+                        {where: {barcode: row.barcode}})
+                        .then(() => {
+                            models.product.findOne({where: {barcode: row.barcode}})
+                                .then((result) => {
+                                    res.send(result);
+                                })
+                                .catch((err) => {
+                                    res.send(err);
+                                })
+                        })
+                        .catch((err) => {
+                            res.send(err);
+                        })
+                }
             })
             .catch((err) => {
                 res.send(err);

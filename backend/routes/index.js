@@ -15,16 +15,14 @@ router.post('/api/sell', function(req, res, next) {
     const row = {
         barcode: req.body.barcode,
         name: req.body.name,
-        actualPrice: req.body.actualPrice,
+        actualPrice: req.body.actualPrice.replace(/,/gi, ''),
         date: new Date()
     };
 
     if (!row.barcode) {
         res.status(500).send("Barcode empty");
-        console.log("Barcode empty");
     } else if (row.actualPrice === 0 || row.actualPrice === '') {
         res.status(500).send("actualPrice empty");
-        console.log("actaulPrice empty: ", row.actualPrice);
     } else {
         controller.product.sell(req, res, row);
         controller.sell.insert(req, res, row);
@@ -34,8 +32,7 @@ router.post('/api/sell', function(req, res, next) {
 router.post('/api/select', function(req, res, next) {   
     const row = {
         barcode: req.body.barcode
-    };      
-    console.log(row.barcode);
+    };
     controller.product.select(req, res, row);
 });
 
@@ -58,7 +55,7 @@ router.post('/api/update', function(req, res, next) {
         res.status(500).send("Empty item error");
     }
 
-    row.price = row.price.replace(',', '');
+    row.price = row.price.replace(/,/gi, '');
 
     controller.product.upsert(req, res, row);
 });
