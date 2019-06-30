@@ -6,7 +6,7 @@
                     <el-input
                             ref="barcode"
                             v-model="form.barcode"
-                              @keyup.enter.native="getInformation"
+                            @keyup.enter.native="getInformation"
                             @focus="onFocus()"
                             @blur="focused--"
                             v-on:keydown.native="keyMonitor"></el-input>
@@ -36,6 +36,7 @@
                 <el-form-item label="판매 가격" v-if="mode">
                     <el-input
                             v-model="form.actualPrice"
+                            @keyup.native="actualPriceMonitor"
                             @keyup.enter.native="onClick"></el-input>
                 </el-form-item>
             </el-col>
@@ -85,6 +86,12 @@
                             this.form.stockPrice = response.data.stockPrice;
                             this.form.price = response.data.price;
                             this.form.stock = response.data.stock;
+                            if (!isNaN(this.form.price)) {
+                                this.form.price = this.form.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }
+                            if (!isNaN(this.form.stockPrice)) {
+                                this.form.stockPrice = this.form.stockPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }
                             this.$message({
                                 message: "정상적으로 판매되었습니다.",
                                 type: 'success'
@@ -101,6 +108,12 @@
                             this.form.stockPrice = response.data.stockPrice;
                             this.form.price = response.data.price;
                             this.form.stock = response.data.stock;
+                            if (!isNaN(this.form.price)) {
+                                this.form.price = this.form.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }
+                            if (!isNaN(this.form.stockPrice)) {
+                                this.form.stockPrice = this.form.stockPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }
                             this.$message({
                                 message: "정상적으로 수정되었습니다.",
                                 type: 'success'
@@ -120,6 +133,11 @@
                     if (event.key === "Enter") {
                         this.enterPressed = true;
                     }
+            },
+            actualPriceMonitor(evt) {
+                this.form.actualPrice = this.form.actualPrice.replace(/,/gi, "");
+                console.log(this.form.actualPrice);
+                this.form.actualPrice = this.form.actualPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             },
             getInformation() {
                 if (this.mode === false) {
