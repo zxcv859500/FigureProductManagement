@@ -39,7 +39,8 @@
                     <el-input
                         v-model="search"
                         size="mini"
-                        placeholder="Type to search"></el-input>
+                        placeholder="Type to search"
+                        v-on:keydown.native="keyMonitor"></el-input>
                 </template>
                 <template slot-scope="scope">
                     <el-button
@@ -59,7 +60,8 @@
             return {
                 tableData: [],
                 search: '',
-                sumPrice: 0
+                sumPrice: 0,
+                enterPressed: false
             }
         },
         mounted() {
@@ -110,6 +112,15 @@
                     .catch((err) => {
                         console.log(err);
                     });
+            },
+            keyMonitor() {
+                if (this.enterPressed) {
+                    this.search = '';
+                    this.enterPressed = false;
+                }
+                if (event.key === "Enter") {
+                    this.enterPressed = true;
+                }
             }
         }
     }

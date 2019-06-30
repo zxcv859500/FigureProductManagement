@@ -111,13 +111,13 @@
                 }
             },
             keyMonitor(event) {
-                if (this.enterPressed) {
-                    this.form.barcode = '';
-                    this.enterPressed = false;
-                }
-                if (event.key === "Enter") {
-                    this.enterPressed = true;
-                }
+                    if (this.enterPressed) {
+                        this.form.barcode = '';
+                        this.enterPressed = false;
+                    }
+                    if (event.key === "Enter") {
+                        this.enterPressed = true;
+                    }
             },
             getInformation() {
                 if (this.mode === false) {
