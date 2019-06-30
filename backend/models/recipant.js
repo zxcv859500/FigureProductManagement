@@ -2,15 +2,13 @@
 const Sequelize = require('sequelize');
 
 module.exports = (sequelize) => {
-    return sequelize.define('product', {
-        productId: {
+    return sequelize.define('recipant', {
+        rdcipantId: {
             type: Sequelize.INTEGER,
             primaryKey: true,
-            autoIncrement: true,
-            uniqueKey: true,
-            notNull: true
+            autoIncrement: true
         },
-        barcode: {
+        nickname: {
             type: Sequelize.STRING,
             notNull: true
         },
@@ -18,21 +16,17 @@ module.exports = (sequelize) => {
             type: Sequelize.STRING,
             notNull: true
         },
-        stock: {
-            type: Sequelize.INTEGER,
+        address: {
+            type: Sequelize.STRING,
             notNull: true
         },
-        stockPrice: {
-            type: Sequelize.INTEGER,
-            notNull: true
-        },
-        price: {
-            type: Sequelize.INTEGER,
+        account: {
+            type: Sequelize.STRING,
             notNull: true
         }
     }, {
         classMethods: {},
-        tableName: 'product',
+        tableName: 'recipant',
         freezeTableName: true,
         timestamps: false
     })

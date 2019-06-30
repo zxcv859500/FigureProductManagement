@@ -41,7 +41,7 @@
                 </el-form-item>
             </el-col>
         </el-form>
-        <el-col :span="21">
+        <el-col :span="20">
             <el-switch
                     v-model="mode"
                     active-text="판매"

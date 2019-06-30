@@ -31,6 +31,11 @@
                 column-key="actualPrice">
             </el-table-column>
             <el-table-column
+                prop="price"
+                label="단 가"
+                column-key="price">
+            </el-table-column>
+            <el-table-column
                 prop="barcode"
                 label="바코드"
                 column-key="barcode">
@@ -66,10 +71,17 @@
                                 date: element.date,
                                 name: element.name,
                                 barcode: element.barcode,
-                                actualPrice: element.actualPrice
+                                actualPrice: element.actualPrice,
+                                price: element.price
                             };
                             if (!isNaN(newData.actualPrice)) {
                                 newData.actualPrice = newData.actualPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                            }
+                            if (!isNaN(newData.price)) {
+                                newData.price = newData.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                            }
+                            if (newData.actualPrice === '0') {
+                                newData.actualPrice = "경품";
                             }
                             this.tableData.push(newData);
                         })

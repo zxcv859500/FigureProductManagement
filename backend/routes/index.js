@@ -7,11 +7,11 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-router.get('/api/list', function(req, res, next) {
+router.get('/list', function(req, res, next) {
   controller.product.list(req, res);
 });
 
-router.post('/api/sell', function(req, res, next) {
+router.post('/sell', function(req, res, next) {
     const row = {
         barcode: req.body.barcode,
         name: req.body.name,
@@ -29,21 +29,21 @@ router.post('/api/sell', function(req, res, next) {
     }
 });
 
-router.post('/api/select', function(req, res, next) {   
+router.post('/select', function(req, res, next) {
     const row = {
         barcode: req.body.barcode
     };
     controller.product.select(req, res, row);
 });
 
-router.post('/api/add', function(req, res, next) {
+router.post('/add', function(req, res, next) {
     const row = {
         barcode: req.body.barcode
     };
     controller.product.add(req, res, row);
 });
 
-router.post('/api/update', function(req, res, next) {
+router.post('/update', function(req, res, next) {
     const row = {
         barcode: req.body.barcode,
         name: req.body.name,
@@ -60,20 +60,11 @@ router.post('/api/update', function(req, res, next) {
     controller.product.upsert(req, res, row);
 });
 
-router.get('/api/sell/list', function(req, res, next) {
+router.get('/sell/list', function(req, res, next) {
     controller.sell.list(req, res);
 });
 
-router.post('/api/sell/datelist', function(req, res, next) {
-    const row = {
-        startDate: req.body.startDate,
-        finalDate: req.body.finalDate
-    };
-    console.log(row);   
-    controller.sell.dateList(req, res, row);
-});
-
-router.post('/api/product/delete', function(req, res, next) {
+router.post('/product/delete', function(req, res, next) {
     const row = {
         id: req.body.id
     };

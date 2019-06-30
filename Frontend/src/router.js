@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import BarcodeForm from './components/BarcodeForm.vue'
 import Product from './components/product.vue'
 import Sell from './components/sell.vue'
+import Recipant from './components/recipant.vue'
 
 Vue.use(Router);
 
@@ -28,6 +29,11 @@ export default new Router({
       path: '/sell',
       name: 'Sell',
       components: { default: Sell }
+    },
+    {
+      path: '/recipant',
+      name: 'Recipant',
+      components: { default: Recipant }
     }
   ]
 })

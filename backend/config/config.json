@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": "rkfaorl453!",
-    "database": "figureproduct",
+    "database": "figureproduct_server",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
