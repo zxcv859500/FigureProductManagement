@@ -136,7 +136,6 @@
             },
             actualPriceMonitor(evt) {
                 this.form.actualPrice = this.form.actualPrice.replace(/,/gi, "");
-                console.log(this.form.actualPrice);
                 this.form.actualPrice = this.form.actualPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             },
             getInformation() {
