@@ -34,7 +34,9 @@
             </el-col>
             <el-col :span="11">
                 <el-form-item label="판매 가격" v-if="mode">
-                    <el-input v-model="form.actualPrice"></el-input>
+                    <el-input
+                            v-model="form.actualPrice"
+                            @keyup.enter.native="onClick"></el-input>
                 </el-form-item>
             </el-col>
         </el-form>
