@@ -15,7 +15,8 @@ router.post('/sell', function(req, res, next) {
     const row = {
         barcode: req.body.barcode,
         actualPrice: req.body.actualPrice.replace(/,/gi, ''),
-        date: new Date()
+        date: new Date(),
+        nickname: req.body.recipant
     };
 
     if (!row.barcode) {
@@ -23,8 +24,8 @@ router.post('/sell', function(req, res, next) {
     } else if (row.actualPrice === 0 || row.actualPrice === '') {
         res.status(500).send("actualPrice empty");
     } else {
-        controller.sell.insert(req, res, row);
         controller.product.sell(req, res, row);
+        controller.sell.insert(req, res, row);
     }
 });
 

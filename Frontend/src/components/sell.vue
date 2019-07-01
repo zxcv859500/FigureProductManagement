@@ -40,6 +40,11 @@
                 label="바코드"
                 column-key="barcode">
             </el-table-column>
+            <el-table-column
+                    prop="recipant"
+                    label="구매자"
+                    column-key="recipant">
+            </el-table-column>
         </el-table>
     </div>
 </template>
@@ -69,10 +74,11 @@
                         res.data.forEach((element) => {
                             const newData = {
                                 date: element.date,
-                                name: element.name,
+                                name: element.productName,
                                 barcode: element.barcode,
                                 actualPrice: element.actualPrice,
-                                price: element.price
+                                price: element.price,
+                                recipant: element.nickname + '(' + element.name + ')'
                             };
                             if (!isNaN(newData.actualPrice)) {
                                 newData.actualPrice = newData.actualPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');

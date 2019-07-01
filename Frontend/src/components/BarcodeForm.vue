@@ -41,6 +41,18 @@
                             @keyup.enter.native="onClick"></el-input>
                 </el-form-item>
             </el-col>
+            <el-col :span="11">
+                <el-form-item label="구매자" v-if="mode">
+                    <el-select v-model="form.recipant" filterable placholder="Search and select">
+                        <el-option
+                            v-for="item in recipants"
+                            :key="item.nickname"
+                            :label="item.nickname"
+                            :value="item.nickname">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-col>
         </el-form>
         <el-col :span="20">
             <el-switch
@@ -59,6 +71,16 @@
     export default {
         name: "BarcodeForm",
         mounted() {
+            this.$axios.get('/api/recipant/list')
+                .then((res) => {
+                    res.data.forEach((element) => {
+                        const recipant = {
+                            nickname: element.nickname,
+                            recipantId: element.recipantId
+                        };
+                        this.recipants.push(recipant);
+                    })
+                })
         },
         data() {
             return {
@@ -68,11 +90,13 @@
                     stockPrice: '',
                     price: '',
                     stock: '',
-                    actualPrice: ''
+                    actualPrice: '',
+                    recipant: ''
                 },
                 mode: true,
                 enterPressed: false,
-                focused: 0
+                focused: 0,
+                recipants: []
             }
         },
         methods: {
@@ -81,6 +105,10 @@
             },
             onClick() {
                 if (this.mode) {
+                    if (this.form.recipant === '') {
+                        this.$message.error("구매자를 선택해주세요.");
+                        return null;
+                    }
                     this.$axios.post('/api/sell', this.form)
                         .then((response) => {
                             this.form.name = response.data.name;
