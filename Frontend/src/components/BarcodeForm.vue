@@ -36,6 +36,7 @@
                 <el-form-item label="판매 가격" v-if="mode">
                     <el-input
                             v-model="form.actualPrice"
+                            ref="actualPrice"
                             @keyup.native="actualPriceMonitor"
                             @keyup.enter.native="onClick"></el-input>
                 </el-form-item>
@@ -97,6 +98,7 @@
                                 type: 'success'
                             });
                             this.form.actualPrice = '';
+                            this.$nextTick(() => this.$refs.barcode.focus());
                         })
                         .catch((err) => {
                             this.$message.error("판매에 실패했습니다. " + err);
@@ -169,6 +171,8 @@
                             if (!isNaN(this.form.stockPrice)) {
                                 this.form.stockPrice = this.form.stockPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             }
+
+                            this.$nextTick(() => this.$refs.actualPrice.focus());
                         })
                         .then((err) => {
                             console.log(err);
