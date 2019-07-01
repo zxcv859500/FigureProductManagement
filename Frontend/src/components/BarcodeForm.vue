@@ -45,11 +45,11 @@
             <el-switch
                     v-model="mode"
                     active-text="판매"
-                    inactive-text="수정">
+                    inactive-text="입고">
             </el-switch>
         </el-col>
         <el-col :span="3">
-            <el-button type="primary" @click="onClick">확인</el-button>
+            <el-button v-if="mode" type="primary" @click="onClick">확인</el-button>
         </el-col>
     </div>
 </template>
