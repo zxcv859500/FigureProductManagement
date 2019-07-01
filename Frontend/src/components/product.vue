@@ -91,7 +91,7 @@
                         this.tableData = [];
                         res.data.forEach((element) => {
                             const newData = {
-                                id: element.id,
+                                productId: element.productId,
                                 name: element.name,
                                 barcode: element.barcode,
                                 price: element.price,

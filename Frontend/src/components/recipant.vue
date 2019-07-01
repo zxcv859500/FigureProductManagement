@@ -23,9 +23,9 @@
                 </el-form-item>
             </el-col>
             <el-col :span="11">
-                <el-form-item label="계좌번호">
+                <el-form-item label="번 호">
                     <el-input
-                        v-model="form.account">
+                        v-model="form.phone">
                     </el-input>
                 </el-form-item>
             </el-col>
@@ -54,9 +54,9 @@
                 column-key="address">
             </el-table-column>
             <el-table-column
-                prop="account"
-                label="계좌번호"
-                column-key="account">
+                prop="phone"
+                label="번 호"
+                column-key="phone">
             </el-table-column>
         </el-table>
     </div>
@@ -71,7 +71,7 @@
                     nickname: '',
                     name: '',
                     address: '',
-                    account: ''
+                    phone: ''
                 },
                 tableData: []
             }
@@ -83,11 +83,27 @@
                         this.tableData = [];
                         res.data.forEach((element) => {
                             const newData = {
+                                id: element.recipantId,
+                                nickname: element.nickname,
+                                name: element.name,
+                                address: element.address,
+                                phone: element.phone
+                            };
+                            this.tableData.push(newData);
+                        })
+                    })
+            },
+            onClick() {
+                this.$axios.post('/api/recipant/insert', this.form)
+                    .then((res) => {
+                        this.tableData = [];
+                        res.data.forEach((element) => {
+                            const newData = {
                                 id: element.id,
                                 nickname: element.nickname,
                                 name: element.name,
                                 address: element.address,
-                                account: element.account
+                                phone: element.phone
                             };
                             this.tableData.push(newData);
                         })

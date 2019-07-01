@@ -70,4 +70,18 @@ router.post('/product/delete', function(req, res, next) {
     controller.product.delete(req, res, row);
 });
 
+router.get('/recipant/list', function(req, res, next) {
+    controller.recipant.list(req, res);
+});
+
+router.post('/recipant/insert', function(req, res, next){
+    const row = {
+        nickname: req.body.nickname,
+        name: req.body.name,
+        address: req.body.address,
+        phone: req.body.phone
+    };
+    controller.recipant.insert(req, res, row);
+});
+
 module.exports = router;

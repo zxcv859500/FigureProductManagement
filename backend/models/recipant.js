@@ -3,14 +3,15 @@ const Sequelize = require('sequelize');
 
 module.exports = (sequelize) => {
     return sequelize.define('recipant', {
-        rdcipantId: {
+        recipantId: {
             type: Sequelize.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
         nickname: {
             type: Sequelize.STRING,
-            notNull: true
+            notNull: true,
+            uniqueKey: true
         },
         name: {
             type: Sequelize.STRING,
@@ -20,7 +21,7 @@ module.exports = (sequelize) => {
             type: Sequelize.STRING,
             notNull: true
         },
-        account: {
+        phone: {
             type: Sequelize.STRING,
             notNull: true
         }
