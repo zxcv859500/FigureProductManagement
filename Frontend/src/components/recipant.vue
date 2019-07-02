@@ -29,6 +29,13 @@
                     </el-input>
                 </el-form-item>
             </el-col>
+            <el-col :span="11">
+                <el-form-item label="비 고">
+                    <el-input
+                        v-model="form.remark">
+                    </el-input>
+                </el-form-item>
+            </el-col>
             <el-col :span="20">
                 <strong style="visibility: hidden">1</strong>
             </el-col>
@@ -37,7 +44,8 @@
             </el-col>
         </el-form>
         <el-table
-            :data="tableData">
+            :data="tableData"
+            :border="true">
             <el-table-column
                 prop="nickname"
                 label="닉네임"
@@ -51,12 +59,18 @@
             <el-table-column
                 prop="address"
                 label="배송지"
-                column-key="address">
+                column-key="address"
+                resizable>
             </el-table-column>
             <el-table-column
                 prop="phone"
                 label="번 호"
                 column-key="phone">
+            </el-table-column>
+            <el-table-column
+                prop="remark"
+                label="비 고"
+                column-key="remark">
             </el-table-column>
         </el-table>
     </div>
@@ -71,7 +85,8 @@
                     nickname: '',
                     name: '',
                     address: '',
-                    phone: ''
+                    phone: '',
+                    remark: ''
                 },
                 tableData: []
             }
@@ -87,7 +102,8 @@
                                 nickname: element.nickname,
                                 name: element.name,
                                 address: element.address,
-                                phone: element.phone
+                                phone: element.phone,
+                                remark: element.remark
                             };
                             this.tableData.push(newData);
                         })
@@ -103,7 +119,8 @@
                                 nickname: element.nickname,
                                 name: element.name,
                                 address: element.address,
-                                phone: element.phone
+                                phone: element.phone,
+                                remark: element.remark
                             };
                             this.tableData.push(newData);
                             this.$message({
@@ -123,6 +140,8 @@
     }
 </script>
 
-<style scoped>
-
+<style>
+    .el-button {
+        margin-bottom: 10px;
+    }
 </style>

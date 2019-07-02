@@ -15,7 +15,8 @@ module.exports = {
             nickname: row.nickname,
             name: row.name,
             address: row.address,
-            phone: row.phone
+            phone: row.phone,
+            remark: row.remark
         })
             .then(() => {
                 this.list(req, res);

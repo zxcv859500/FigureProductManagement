@@ -24,6 +24,9 @@ module.exports = (sequelize) => {
         phone: {
             type: Sequelize.STRING,
             notNull: true
+        },
+        remark: {
+            type: Sequelize.STRING
         }
     }, {
         classMethods: {},

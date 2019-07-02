@@ -80,7 +80,8 @@ router.post('/recipant/insert', function(req, res, next){
         nickname: req.body.nickname,
         name: req.body.name,
         address: req.body.address,
-        phone: req.body.phone
+        phone: req.body.phone,
+        remark: req.body.remark
     };
     controller.recipant.insert(req, res, row);
 });
