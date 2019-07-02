@@ -16,6 +16,7 @@ router.post('/sell', function(req, res, next) {
         barcode: req.body.barcode,
         actualPrice: req.body.actualPrice.replace(/,/gi, ''),
         date: new Date(),
+        stock: req.body.stock,
         nickname: req.body.recipant
     };
 
@@ -23,6 +24,8 @@ router.post('/sell', function(req, res, next) {
         res.status(500).send("Barcode empty");
     } else if (row.actualPrice === '') {
         res.status(500).send("actualPrice empty");
+    } else if (row.stock <= 0) {
+        res.status(500).send("can't sell if stock is less than 0")
     } else {
         controller.product.sell(req, res, row);
         controller.sell.insert(req, res, row);
