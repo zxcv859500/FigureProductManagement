@@ -21,7 +21,7 @@ router.post('/sell', function(req, res, next) {
 
     if (!row.barcode) {
         res.status(500).send("Barcode empty");
-    } else if (row.actualPrice === 0 || row.actualPrice === '') {
+    } else if (row.actualPrice === '') {
         res.status(500).send("actualPrice empty");
     } else {
         controller.product.sell(req, res, row);
