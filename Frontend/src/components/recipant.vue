@@ -123,11 +123,17 @@
                                 remark: element.remark
                             };
                             this.tableData.push(newData);
-                            this.$message({
-                                message: "수령인 등록에 성공했습니다.",
-                                type: 'success'
-                            })
-                        })
+
+                        });
+                        this.$message({
+                            message: "수령인 등록에 성공했습니다.",
+                            type: 'success'
+                        });
+                        this.form.nickname = '';
+                        this.form.name = '';
+                        this.form.address = '';
+                        this.form.phone = '';
+                        this.form.remark = '';
                     })
                     .catch((err) => {
                         this.$message.error("등록에 실패했습니다. " + err);
