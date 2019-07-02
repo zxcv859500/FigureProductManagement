@@ -24,7 +24,7 @@ module.exports = {
             })
     },
     list(req, res, row) {
-        models.sequelize.query('SELECT * FROM sell natural join (select barcode, price, name as productName from product)spq natural join sellapply, recipant',
+        models.sequelize.query('SELECT * FROM sell natural join (select barcode, price, name as productName from product)spq natural join sellapply natural join recipant',
             {type: models.Sequelize.QueryTypes.SELECT})
             .then((result) => {
                 res.send(result);
