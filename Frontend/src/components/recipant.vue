@@ -47,6 +47,11 @@
             :data="tableData"
             :border="true">
             <el-table-column
+                prop="count"
+                label="번호"
+                column-key="count">
+            </el-table-column>
+            <el-table-column
                 prop="nickname"
                 label="닉네임"
                 column-key="nickname">
@@ -96,8 +101,10 @@
                 this.$axios.get('/api/recipant/list')
                     .then((res) => {
                         this.tableData = [];
+                        let count = 1;
                         res.data.forEach((element) => {
                             const newData = {
+                                count: count,
                                 id: element.recipantId,
                                 nickname: element.nickname,
                                 name: element.name,
@@ -105,16 +112,20 @@
                                 phone: element.phone,
                                 remark: element.remark
                             };
+                            count++;
                             this.tableData.push(newData);
                         })
+                        this.tableData = this.tableData.reverse();
                     })
             },
             onClick() {
                 this.$axios.post('/api/recipant/insert', this.form)
                     .then((res) => {
                         this.tableData = [];
+                        let count = 1;
                         res.data.forEach((element) => {
                             const newData = {
+                                count: count,
                                 id: element.id,
                                 nickname: element.nickname,
                                 name: element.name,
@@ -122,9 +133,10 @@
                                 phone: element.phone,
                                 remark: element.remark
                             };
+                            count++;
                             this.tableData.push(newData);
-
                         });
+                        this.tableData = this.tableData.reverse();
                         this.$message({
                             message: "수령인 등록에 성공했습니다.",
                             type: 'success'

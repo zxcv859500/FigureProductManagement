@@ -46,6 +46,10 @@
             </template>
         </el-table-column>
         <el-table-column
+            prop="id"
+            label="번호">
+        </el-table-column>
+        <el-table-column
             prop="nickname"
             label="닉네임">
         </el-table-column>
@@ -83,8 +87,10 @@
                 this.$axios.post('/api/send/list', { today: today })
                     .then((res) => {
                         this.tableData = [];
+                        let count = 1;
                         res.data.forEach((ele) => {
                             const newData = {
+                                id: count,
                                 recipantId: ele.recipantId,
                                 nickname: ele.nickname,
                                 name: ele.name,
@@ -96,6 +102,7 @@
                                     prize: []
                                 }
                             };
+                            count++;
                             this.tableData.push(newData);
                         })
                     })
@@ -115,9 +122,11 @@
                                 name: ele.name,
                                 actualPrice: ele.actualPrice
                             };
-                            if (newData.actualPrice === '경품') {
+                            if (newData.actualPrice === 0) {
+                                newData.actualPrice = "경품";
                                 row.data.prize.push(newData);
                             } else {
+                                newData.actualPrice = newData.actualPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                                 row.data.auction.push(newData);
                             }
                         })
