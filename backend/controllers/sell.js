@@ -32,5 +32,15 @@ module.exports = {
             .catch((err) => {
                 res.send(err);
             })
+    },
+    sendList(req, res, row) {
+        models.sequelize.query('SELECT date, name, actualPrice FROM sell natural join product natural join sellapply where recipantId=' + row.recipantId + ' and date=' + '"' + row.date + '"',
+            { type: models.Sequelize.QueryTypes.SELECT })
+            .then((result => {
+                res.send(result);
+            }))
+            .catch((err) => {
+                res.send(err);
+            })
     }
 };

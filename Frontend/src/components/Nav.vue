@@ -11,7 +11,8 @@
                     <el-menu-item index="home">판매/갱신</el-menu-item>
                     <el-menu-item index="product">제품 목록</el-menu-item>
                     <el-menu-item index="sell">판매 기록</el-menu-item>
-                    <el-menu-item index="recipant">수령인</el-menu-item>
+                    <el-menu-item index="recipant">회원 목록</el-menu-item>
+                    <el-menu-item index="send">배송</el-menu-item>
                 </el-menu>
             </el-col>
         </el-row>

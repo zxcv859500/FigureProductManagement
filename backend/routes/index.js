@@ -89,4 +89,19 @@ router.post('/recipant/insert', function(req, res, next){
     controller.recipant.insert(req, res, row);
 });
 
+router.post('/send/list', function(req, res, next) {
+    const row = {
+        date: req.body.today
+    };
+    controller.recipant.sendList(req, res, row);
+});
+
+router.post('/send/props', function(req, res, next) {
+    const row = {
+        date: req.body.today,
+        recipantId: req.body.recipantId
+    };
+    controller.sell.sendList(req, res, row);
+})
+
 module.exports = router;
