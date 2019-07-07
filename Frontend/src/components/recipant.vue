@@ -77,16 +77,26 @@
                 label="비 고"
                 column-key="remark">
             </el-table-column>
+            <el-table-column
+                    fixed="right"
+                    label="Operations"
+                    width="120">
+                <template slot-scope="scope">
+                    <el-button @click="onEdit(scope.row)" type="text" size="small">Edit</el-button>
+                    <el-button @click="onDelete(scope.row)  " type="text" size="small">Delete</el-button>
+                </template>
+            </el-table-column>
         </el-table>
     </div>
 </template>
 
 <script>
     export default {
-        name: "recipant.vue",
+        name: "recipant",
         data() {
             return {
                 form: {
+                    recipantId: 0,
                     nickname: '',
                     name: '',
                     address: '',
@@ -114,42 +124,51 @@
                             };
                             count++;
                             this.tableData.push(newData);
-                        })
+                        });
                         this.tableData = this.tableData.reverse();
                     })
             },
             onClick() {
                 this.$axios.post('/api/recipant/insert', this.form)
-                    .then((res) => {
-                        this.tableData = [];
-                        let count = 1;
-                        res.data.forEach((element) => {
-                            const newData = {
-                                count: count,
-                                id: element.id,
-                                nickname: element.nickname,
-                                name: element.name,
-                                address: element.address,
-                                phone: element.phone,
-                                remark: element.remark
-                            };
-                            count++;
-                            this.tableData.push(newData);
-                        });
-                        this.tableData = this.tableData.reverse();
+                    .then(() => {
                         this.$message({
                             message: "수령인 등록에 성공했습니다.",
                             type: 'success'
                         });
+                        this.form.recipantId = 0;
                         this.form.nickname = '';
                         this.form.name = '';
                         this.form.address = '';
                         this.form.phone = '';
                         this.form.remark = '';
+
+                        this.load();
                     })
                     .catch((err) => {
                         this.$message.error("등록에 실패했습니다. " + err);
                     })
+            },
+            onDelete(row) {
+                this.$axios.post('/api/recipant/delete', { recipantId: row.id })
+                    .then(() => {
+                        this.$message({
+                            message: "삭제 성공",
+                            type: 'success'
+                        });
+
+                        this.load();
+                    })
+            },
+            onEdit(row) {
+                this.form = {
+                    recipantId: row.id,
+                    nickname: row.nickname,
+                    name: row.name,
+                    address: row.address,
+                    phone: row.phone,
+                    remark: row.remark
+                };
+                window.scrollTo(0, 0);
             }
         },
         mounted() {

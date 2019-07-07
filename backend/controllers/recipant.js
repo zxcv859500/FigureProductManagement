@@ -11,15 +11,29 @@ module.exports = {
             })
     },
     insert(req, res, row) {
-        models.recipant.create({
-            nickname: row.nickname,
-            name: row.name,
-            address: row.address,
-            phone: row.phone,
-            remark: row.remark
-        })
-            .then(() => {
-                this.list(req, res);
+        models.recipant.findOne( { where: {
+            recipantId: row.recipantId
+        }})
+            .then((result) => {
+                if(result) {
+                    result.update({
+                        nickname: row.nickname,
+                        name: row.name,
+                        address: row.address,
+                        phone: row.phone,
+                        remark: row.remark
+                    })
+                }
+                else {
+                    models.recipant.create({
+                        nickname: row.nickname,
+                        name: row.name,
+                        address: row.address,
+                        phone: row.phone,
+                        remark: row.remark
+                    })
+                }
+                res.sendStatus(200);
             })
             .catch((err) => {
                 res.send(err);
@@ -30,6 +44,17 @@ module.exports = {
             { type: models.Sequelize.QueryTypes.SELECT })
             .then((result) => {
                 res.send(result);
+            })
+            .catch((err) => {
+                res.send(err);
+            })
+    },
+    delete(req, res, row) {
+        models.recipant.destroy({
+            where: { recipantId: row.recipantId }
+        })
+            .then(() => {
+                res.sendStatus(200);
             })
             .catch((err) => {
                 res.send(err);

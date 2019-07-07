@@ -1,76 +1,86 @@
 <template>
-    <el-table
-        :data="tableData"
-        style="width: 100%"
-        :border="true"
-        @expand-change="getProps">
-        <el-table-column
-                type="expand">
-            <template slot-scope="props">
-                <el-col :span="11">
-                    <el-table
-                        :data="props.row.data.auction"
-                        style="width: 100%">
-                            <el-table-column
-                                prop="date"
-                                label="날 짜">
-                            </el-table-column>
-                            <el-table-column
-                                prop="name"
-                                label="상품명">
-                            </el-table-column>
-                            <el-table-column
-                                prop="actualPrice"
-                                label="판매가">
-                            </el-table-column>
-                    </el-table>
-                </el-col>
-                <el-col :span="11">
-                    <el-table
-                        :data="props.row.data.prize"
-                        style="width: 100%">
-                            <el-table-column
+    <div class="send">
+        <el-date-picker
+                v-model="date"
+                type="date"
+                placeholder="Pick a day"
+                @change="loadRecipant">
+        </el-date-picker>
+        <el-table
+            :data="tableData"
+            style="width: 100%"
+            :border="true"
+            @expand-change="getProps">
+            <el-table-column
+                    type="expand">
+                <template slot-scope="props">
+                    <el-col :span="11">
+                        <el-table
+                            :data="props.row.data.auction"
+                            style="width: 100%"
+                            row-class-name="row-auction">
+                                <el-table-column
                                     prop="date"
                                     label="날 짜">
-                            </el-table-column>
-                            <el-table-column
+                                </el-table-column>
+                                <el-table-column
                                     prop="name"
                                     label="상품명">
-                            </el-table-column>
-                            <el-table-column
+                                </el-table-column>
+                                <el-table-column
                                     prop="actualPrice"
                                     label="판매가">
-                            </el-table-column>
-                    </el-table>
-                </el-col>
-            </template>
-        </el-table-column>
-        <el-table-column
-            prop="id"
-            label="번호">
-        </el-table-column>
-        <el-table-column
-            prop="nickname"
-            label="닉네임">
-        </el-table-column>
-        <el-table-column
-            prop="name"
-            label="이 름">
-        </el-table-column>
-        <el-table-column
-            prop="address"
-            label="주 소"
-            resizable>
-        </el-table-column>
-        <el-table-column
-            prop="phone"
-            label="번 호">
-        </el-table-column>
-        <el-table-column
-            prop="remark"
-            label="비 고">
-        </el-table-column>
-    </el-table>
+                                </el-table-column>
+                        </el-table>
+                    </el-col>
+                    <el-col :span="11">
+                        <el-table
+                            :data="props.row.data.prize"
+                            style="width: 100%"
+                            row-class-name="row-prize">
+                                <el-table-column
+                                        prop="date"
+                                        label="날 짜">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="상품명">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="actualPrice"
+                                        label="판매가">
+                                </el-table-column>
+                        </el-table>
+                    </el-col>
+                </template>
+            </el-table-column>
+            <el-table-column
+                prop="id"
+                label="번호">
+            </el-table-column>
+            <el-table-column
+                prop="nickname"
+                label="닉네임">
+            </el-table-column>
+            <el-table-column
+                prop="name"
+                label="이 름">
+            </el-table-column>
+            <el-table-column
+                prop="address"
+                label="주 소"
+                resizable>
+            </el-table-column>
+            <el-table-column
+                prop="phone"
+                label="번 호">
+            </el-table-column>
+            <el-table-column
+                prop="remark"
+                label="비 고">
+            </el-table-column>
+        </el-table>
+    </div>
 </template>
 
 <script>
@@ -78,12 +88,15 @@
         name: "send",
         data() {
             return {
-                tableData: []
+                tableData: [],
+                date: ''
             }
         },
         methods: {
             loadRecipant() {
-                let today = new Date().format('yyyy-MM-dd');
+                let today;
+                if (this.date === "") today = new Date().format('yyyy-MM-dd');
+                else today = this.date.format('yyyy-MM-dd');
                 this.$axios.post('/api/send/list', { today: today })
                     .then((res) => {
                         this.tableData = [];
@@ -111,7 +124,9 @@
                     })
             },
             getProps(row) {
-                let today = new Date().format('yyyy-MM-dd');
+                let today;
+                if (this.date === "") today = new Date().format('yyyy-MM-dd');
+                else today = this.date.format('yyyy-MM-dd');
                 this.$axios.post('/api/send/props', { today: today, recipantId: row.recipantId })
                     .then((res) => {
                         row.data.auction = [];
@@ -134,7 +149,6 @@
             }
         },
         mounted() {
-
             Date.prototype.format = function (f) {
                 if (!this.valueOf()) return " ";
                 var weekKorName = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
@@ -169,6 +183,14 @@
     }
 </script>
 
-<style scoped>
-
+<style>
+    .el-date-editor {
+        margin-bottom: 15px;
+    }
+    .el-table .row-auction {
+        background: oldlace;
+    }
+    .el-table .row-prize {
+        background: #f0f9eb;
+    }
 </style>

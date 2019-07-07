@@ -80,6 +80,7 @@ router.get('/recipant/list', function(req, res, next) {
 
 router.post('/recipant/insert', function(req, res, next){
     const row = {
+        recipantId: req.body.recipantId,
         nickname: req.body.nickname,
         name: req.body.name,
         address: req.body.address,
@@ -102,6 +103,13 @@ router.post('/send/props', function(req, res, next) {
         recipantId: req.body.recipantId
     };
     controller.sell.sendList(req, res, row);
+});
+
+router.post('/recipant/delete', function(req, res, next) {
+    const row = {
+        recipantId: req.body.recipantId
+    };
+    controller.recipant.delete(req, res, row);
 })
 
 module.exports = router;

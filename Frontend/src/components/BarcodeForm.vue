@@ -207,6 +207,13 @@
                         })
                 }
             }
+        },
+        watch: {
+            mode: function(val) {
+                if (val === false) {
+                    this.$nextTick(() => this.$refs.barcode.focus());
+                }
+            }
         }
     }
 </script>
