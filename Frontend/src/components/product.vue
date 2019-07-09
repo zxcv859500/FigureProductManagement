@@ -1,8 +1,48 @@
 <template>
     <div class="product">
-        <div class="sum-price">
-            합산 가격 : {{ sumPrice }}
-        </div>
+        <el-form :model="form" label-width="120px">
+            <el-col :span="11">
+                <el-form-item label="바코드 번호">
+                    <el-input
+                        v-model="form.barcode">
+                    </el-input>
+                </el-form-item>
+            </el-col>
+            <el-col :span="11">
+                <el-form-item label="상품 이름">
+                    <el-input v-model="form.name">
+                    </el-input>
+                </el-form-item>
+            </el-col>
+            <el-col :span="11">
+                <el-form-item label="재고 금액">
+                    <el-input v-model="form.stockPrice">
+                    </el-input>
+                </el-form-item>
+            </el-col>
+            <el-col :span="11">
+                <el-form-item label="단 가">
+                    <el-input v-model="form.price">
+                    </el-input>
+                </el-form-item>
+            </el-col>
+            <el-col :span="11">
+                <el-form-item label="재 고">
+                    <el-input v-model="form.stock">
+                    </el-input>
+                </el-form-item>
+            </el-col>
+        </el-form>
+        <el-col :offset="22">
+            <el-button
+                    type="success"
+                    @click="onEdit">수정</el-button>
+        </el-col>
+        <el-col :span="11">
+            <div class="sum-price">
+                합산 가격 : {{ sumPrice }}
+            </div>
+        </el-col>
         <el-table
             :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase())
             || data.barcode.includes(search.toLowerCase()))"
@@ -43,9 +83,10 @@
                         v-on:keydown.native="keyMonitor"></el-input>
                 </template>
                 <template slot-scope="scope">
+                    <el-button @click="handleEdit(scope.row)" type="text" size="small">Edit</el-button>
                     <el-button
-                        size="mini"
-                        type="danger"
+                        size="small"
+                        type="text"
                         @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
                 </template>
             </el-table-column>
@@ -61,7 +102,15 @@
                 tableData: [],
                 search: '',
                 sumPrice: 0,
-                enterPressed: false
+                enterPressed: false,
+                form: {
+                    productId: null,
+                    barcode: null,
+                    name: null,
+                    stockPrice: null,
+                    price: null,
+                    stock: null
+                }
             }
         },
         mounted() {
@@ -106,7 +155,7 @@
                                 newData.stockPrice = newData.stockPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                             }
                             this.tableData.push(newData);
-                        })
+                        });
                         this.sumPrice = this.sumPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                     })
                     .catch((err) => {
@@ -121,6 +170,30 @@
                 if (event.key === "Enter") {
                     this.enterPressed = true;
                 }
+            },
+            onEdit() {
+                this.$axios.post('/api/product/update', this.form)
+                    .then(() => {
+                        this.$message({
+                            message: "수정 성공",
+                            type: "success"
+                        });
+                        this.load();
+                    })
+                    .catch((err) => {
+                        this.$message.error("수정 실패 " + err);
+                    })
+            },
+            handleEdit(row) {
+                this.form = {
+                    productId: row.productId,
+                    barcode: row.barcode,
+                    name: row.name,
+                    stock: row.stock,
+                    price: row.price,
+                    stockPrice: row.stockPrice
+                };
+                window.scrollTo(0, 0);
             }
         }
     }

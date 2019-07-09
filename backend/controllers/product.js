@@ -79,18 +79,22 @@ module.exports = {
     },
     upsert(req, res, row) {
         models.product.findOne({
-            where: { barcode: row.barcode }
+            where: { productId: row.productId }
         })
         .then((result) => {
             if (!result) {
                 this.insert(req, res, row);
             } else {
                 models.product.update({
+                    barcode: row.barcode,
                     name: row.name,
                     price: row.price,
                     stock: row.stock,
                     stockPrice: row.price * row.stock
-                }, { where: { barcode: row.barcode }})
+                }, { where: { productId: row.productId }})
+                    .then(() => {
+                        res.send(result);
+                    })
             }
         })
         .catch((err) => {

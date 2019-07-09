@@ -5,6 +5,7 @@ import Product from './components/product.vue'
 import Sell from './components/sell.vue'
 import Recipant from './components/recipant.vue'
 import Send from './components/send.vue'
+import Memo from './components/memo.vue'
 
 Vue.use(Router);
 
@@ -40,6 +41,11 @@ export default new Router({
       path: '/send',
       name: Send,
       components: { default: Send }
+    },
+    {
+      path: '/memo',
+      name: Memo,
+      components: { default: Memo }
     }
   ]
 })

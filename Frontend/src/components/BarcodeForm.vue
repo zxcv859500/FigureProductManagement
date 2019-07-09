@@ -126,12 +126,14 @@
                                 type: 'success'
                             });
                             this.form.actualPrice = '';
+                            this.form.recipant = '';
                             this.$nextTick(() => this.$refs.barcode.focus());
                         })
                         .catch((err) => {
                             this.$message.error("판매에 실패했습니다. " + err);
                         });
                 } else {
+                    /*
                     this.$axios.post('/api/update', this.form)
                         .then((response) => {
                             this.form.name = response.data.name;
@@ -153,6 +155,7 @@
                         .catch((err) => {
                             this.$message.error("수정에 실패했습니다." + err);
                         })
+                     */
                 }
             },
             keyMonitor(event) {
