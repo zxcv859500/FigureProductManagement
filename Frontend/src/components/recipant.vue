@@ -49,33 +49,39 @@
             <el-table-column
                 prop="count"
                 label="번호"
-                column-key="count">
+                column-key="count"
+                width="50px">
             </el-table-column>
             <el-table-column
                 prop="nickname"
                 label="닉네임"
-                column-key="nickname">
+                column-key="nickname"
+                width="200px">
             </el-table-column>
             <el-table-column
                 prop="name"
                 label="이름"
-                column-key="name">
+                column-key="name"
+                width="150px">
             </el-table-column>
             <el-table-column
                 prop="address"
                 label="배송지"
                 column-key="address"
+                width="800px"
                 resizable>
             </el-table-column>
             <el-table-column
                 prop="phone"
                 label="번 호"
-                column-key="phone">
+                column-key="phone"
+                width="200px">
             </el-table-column>
             <el-table-column
                 prop="remark"
                 label="비 고"
-                column-key="remark">
+                column-key="remark"
+                width="200px">
             </el-table-column>
             <el-table-column
                     fixed="right"

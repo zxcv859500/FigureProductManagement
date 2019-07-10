@@ -80,7 +80,8 @@
                         };
                         this.recipants.push(recipant);
                     })
-                })
+                });
+            this.$nextTick(() => this.$refs.barcode.focus());
         },
         data() {
             return {
