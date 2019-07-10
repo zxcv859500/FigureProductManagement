@@ -1,8 +1,43 @@
 <template>
     <div class="sell-history">
-        <div class="sum-price">
-            실제 합산 가격: {{ sumPrice }}
-        </div>
+        <el-form :model="form" label-width="120px">
+            <el-row>
+                <el-col :span="11">
+                    <el-form-item label="바코드 번호">
+                        <el-input v-model="form.barcode"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="11">
+                    <el-form-item label="실 판매가">
+                        <el-input
+                                v-model="form.actualPrice"
+                                @keyup.native="actualPriceMonitor"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="22">
+                    <el-form-item label="구매자">
+                        <el-select v-model="form.recipant" filterable placholder="Search and select">
+                            <el-option
+                                    v-for="item in recipants"
+                                    :key="item.nickname"
+                                    :label="item.nickname"
+                                    :value="item.nickname">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row type="flex" justify="end">
+                <el-col :span="4">
+                    <el-button type="success" @click="onEdit">수정</el-button>
+                </el-col>
+            </el-row>
+        </el-form>
+        <el-col :span="22">
+            <div class="sum-price">
+                실제 합산 가격: {{ sumPrice }}
+            </div>
+        </el-col>
         <el-date-picker
             v-model="date"
             type="daterange"
@@ -45,6 +80,14 @@
                     label="구매자"
                     column-key="recipant">
             </el-table-column>
+            <el-table-column
+                    fixed="right"
+                    label="Operations"
+                    width="120">
+                <template slot-scope="scope">
+                    <el-button @click="handleEdit(scope.row)" type="text" size="small">Edit</el-button>
+                </template>
+            </el-table-column>
         </el-table>
     </div>
 </template>
@@ -57,10 +100,27 @@
                 tableData: [],
                 date: '',
                 compareDate: [],
-                showData: []
+                showData: [],
+                form: {
+                    sellId: 0,
+                    barcode: '',
+                    actualPrice: '',
+                    recipant: ''
+                },
+                recipants: []
             }
         },
         mounted() {
+            this.$axios.get('/api/recipant/list')
+                .then((res) => {
+                    res.data.forEach((element) => {
+                        const recipant = {
+                            nickname: element.nickname,
+                            recipantId: element.recipantId
+                        };
+                        this.recipants.push(recipant);
+                    })
+                });
             this.compareDate[0] = Date.parse(new Date().toLocaleDateString());
             this.compareDate[1] = this.compareDate[0] + 32400000;
             this.load();
@@ -73,6 +133,7 @@
                         this.tableData = [];
                         res.data.forEach((element) => {
                             const newData = {
+                                sellId: element.sellId,
                                 date: element.date,
                                 name: element.productName,
                                 barcode: element.barcode,
@@ -91,6 +152,7 @@
                             }
                             this.tableData.push(newData);
                         })
+                        this.onChange();
                     })
                     .catch((err) => {
                         console.log(err);
@@ -100,6 +162,32 @@
                 this.compareDate[0] = Date.parse(this.date[0].toLocaleDateString());
                 this.compareDate[1] = Date.parse(this.date[1].toLocaleDateString()) + 32400000;
                 this.showData = this.tableData.filter(data => !this.compareDate || (Date.parse(data.date) >= this.compareDate[0] && Date.parse(data.date) <= this.compareDate[1]))
+            },
+            handleEdit(row) {
+                this.form = {
+                    sellId: row.sellId,
+                    barcode: row.barcode,
+                    actualPrice: row.actualPrice,
+                    recipant: row.recipant.split('(')[0]
+                };
+                window.scrollTo(0, 0);
+            },
+            onEdit() {
+                this.$axios.post('/api/sell/update', this.form)
+                    .then(() => {
+                        this.$message({
+                            message: "수정 성공",
+                            type: "success"
+                        });
+                        this.load();
+                    })
+                    .catch((err) => {
+                        this.$message.error("수정 실패 " + err);
+                    })
+            },
+            actualPriceMonitor(evt) {
+                this.form.actualPrice = this.form.actualPrice.replace(/,/gi, "");
+                this.form.actualPrice = this.form.actualPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
         },
         computed: {
@@ -109,7 +197,7 @@
                     const price = Number(element.actualPrice.replace(/,/gi, ""));
                     if (!isNaN(price))
                         result += price;
-                })
+                });
                 return result.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             }
         }

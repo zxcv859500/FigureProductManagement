@@ -3,6 +3,28 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 module.exports = {
+    update(req, res, row) {
+        let recipantId;
+        models.recipant.findOne({
+            where: { nickname: row.nickname }
+        })
+            .then((result) => {
+                recipantId = result.recipantId;
+
+                Promise.all([
+                    models.sell.update({
+                        actualPrice: row.actualPrice
+                    }, { where: { sellId: row.sellId }}),
+                    models.sequelize.query('UPDATE sellapply SET recipantId=' + recipantId + ' WHERE sellId=' + row.sellId)
+                ])
+                    .then((result) => {
+                        res.send(result);
+                    })
+                    .catch((err) => {
+                        res.send(err);
+                    })
+            })
+    },
     insert(req, res, row) {
         let recipantId, sellId;
         Promise.all([

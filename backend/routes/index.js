@@ -15,7 +15,7 @@ router.post('/sell', function(req, res, next) {
     const row = {
         barcode: req.body.barcode,
         actualPrice: req.body.actualPrice.replace(/,/gi, ''),
-        date: new Date().toLocaleDateString(),
+        date: new Date(),
         stock: req.body.stock,
         nickname: req.body.recipant
     };
@@ -68,6 +68,16 @@ router.post('/product/update', function(req, res, next) {
 
 router.get('/sell/list', function(req, res, next) {
     controller.sell.list(req, res);
+});
+
+router.post('/sell/update', function(req, res, next) {
+    const row = {
+        nickname: req.body.recipant,
+        sellId: req.body.sellId,
+        actualPrice: req.body.actualPrice.replace(/,/gi, '')
+    };
+
+    controller.sell.update(req, res, row);
 });
 
 router.post('/product/delete', function(req, res, next) {
