@@ -107,9 +107,10 @@ module.exports = {
             name: row.name,
             price: row.price,
             stock: row.stock,
-            stockPrice: row.stockPrice
+            stockPrice: row.stock * row.price
         })
             .then((result) => {
+                console.log('succss');
                 models.product.findOne({where: { barcode: row.barcode }})
                     .then((result) => {
                         res.send(result);
@@ -119,6 +120,7 @@ module.exports = {
                     })
             })
             .catch((err) => {
+                console.log('failed' + err);
                 res.send(err);
             })
     },

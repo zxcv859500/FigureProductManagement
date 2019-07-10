@@ -22,18 +22,20 @@ module.exports = {
                         address: row.address,
                         phone: row.phone,
                         remark: row.remark
-                    })
+                    });
+                    res.sendStatus(200);
                 }
                 else {
+                    console.log("hi");
                     models.recipant.create({
                         nickname: row.nickname,
                         name: row.name,
                         address: row.address,
                         phone: row.phone,
                         remark: row.remark
-                    })
+                    });
+                    res.sendStatus(200);
                 }
-                res.sendStatus(200);
             })
             .catch((err) => {
                 res.send(err);
