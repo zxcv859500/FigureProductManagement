@@ -59,6 +59,7 @@
                             type: "success"
                         });
                         this.load();
+                        this.form.content = '';
                     })
                     .catch((err) => {
                         this.$message.error("등록 실패 " + err);
