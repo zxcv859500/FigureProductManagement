@@ -121,7 +121,7 @@ router.get('/memo/list', function(req, res, next) {
 
 router.post('/memo/insert', function(req, res, next) {
     const row = {
-        title: req.body.title,
+        date: new Date(),
         content: req.body.content
     };
     controller.memo.insert(req, res, row);

@@ -9,8 +9,8 @@ module.exports = (sequelize) => {
             autoIncrement: true,
             notNull: true
         },
-        title: {
-            type: Sequelize.STRING,
+        date: {
+            type: Sequelize.DATE,
             notNull: true,
         },
         content: {

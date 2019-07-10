@@ -1,14 +1,7 @@
 <template>
     <div class="memo">
         <el-form :model="form" label-width="120px">
-            <el-col :span="6">
-                <el-form-item label="제 목">
-                    <el-input
-                        v-model="form.title">
-                    </el-input>
-                </el-form-item>
-            </el-col>
-            <el-col :span="16">
+            <el-col :span="22">
                 <el-form-item label="내 용">
                     <el-input
                         type="textarea"
@@ -28,11 +21,15 @@
             :border="true">
             <el-table-column
                 prop="memoId"
-                label="번 호">
+                label="번 호"
+                width="50px">
             </el-table-column>
             <el-table-column
-                prop="title"
-                label="제 목">
+                label="날 짜"
+                width="150px">
+                <template slot-scope="scope">
+                    {{ new Date(scope.row.date).toLocaleDateString() }}<br>{{ new Date(scope.row.date).toLocaleTimeString() }}
+                </template>
             </el-table-column>
             <el-table-column
                 prop="content"
@@ -48,7 +45,6 @@
         data() {
             return {
                 form: {
-                    title: '',
                     content: ''
                 },
                 tableData: []
@@ -75,14 +71,20 @@
                         result.data.forEach((element) => {
                             const newData = {
                                 memoId: element.memoId,
-                                title: element.title,
+                                date: element.date,
                                 content: element.content
                             };
+                            //newData.date = new Date(Date.parse(newData.date) + 1000 * 60 * 60 * 7);
+                            //newData.date = new Date(newData.date).toLocaleDateString() + '<br/>' +
+                            //    new Date(newData.date).toLocaleTimeString();
                             this.tableData.push(newData);
                         });
                         this.tableData = this.tableData.reverse();
                     })
             }
+        },
+        mounted() {
+            this.load();
         }
     }
 </script>

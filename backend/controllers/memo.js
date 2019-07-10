@@ -12,7 +12,7 @@ module.exports = {
     },
     insert(req, res, row) {
         models.memo.create({
-            title: row.title,
+            date: row.date,
             content: row.content
         })
             .then((result) => {
