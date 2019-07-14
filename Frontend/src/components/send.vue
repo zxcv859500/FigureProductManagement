@@ -10,7 +10,8 @@
             :data="tableData"
             style="width: 100%"
             :border="true"
-            @expand-change="getProps">
+            @expand-change="getProps"
+            :row-class-name="recipantClass">
             <el-table-column
                     type="expand">
                 <template slot-scope="props">
@@ -18,7 +19,7 @@
                         <el-table
                             :data="props.row.data.auction"
                             style="width: 100%"
-                            row-class-name="row-auction">
+                            :row-class-name="auctionClass">
                                 <el-table-column
                                     prop="date"
                                     label="날 짜">
@@ -30,6 +31,14 @@
                                 <el-table-column
                                     prop="actualPrice"
                                     label="판매가">
+                                </el-table-column>
+                                <el-table-column
+                                        label="Operations"
+                                        width="120">
+                                    <template slot-scope="scope">
+                                        <el-button @click="handleDeposit(scope.row)" type="text" size="small">입금</el-button>
+                                        <el-button @click="handleCancel(scope.row)" type="text" size="small">취소</el-button>
+                                    </template>
                                 </el-table-column>
                         </el-table>
                     </el-col>
@@ -59,7 +68,9 @@
                 sortable
                 @sort-method="sortBy">
                 <template slot-scope="scope">
-                    {{ scope.row.id + ' ' + scope.row.totalPrice }}
+                    {{ scope.row.id }} <br>
+                    <span style="color:blue">{{ scope.row.totalPrice }}</span> <br>
+                    <span style="color:red">{{ scope.row.restPrice }}</span>
                 </template>
             </el-table-column>
             <el-table-column
@@ -115,6 +126,7 @@
                                 phone: ele.phone,
                                 remark: ele.remark,
                                 totalPrice: '',
+                                restPrice: '',
                                 data: {
                                     auction: [],
                                     prize: []
@@ -141,28 +153,84 @@
                         row.data.auction = [];
                         row.data.prize = [];
                         let totalPrice = 0;
+                        let restPrice = 0;
                         res.data.forEach((ele) => {
                             const newData = {
+                                sellId: ele.sellId,
                                 date: ele.date,
                                 name: ele.name,
-                                actualPrice: ele.actualPrice
+                                actualPrice: ele.actualPrice,
+                                deposit: ele.deposit
                             };
                             if (newData.actualPrice === 0) {
                                 newData.actualPrice = "경품";
                                 row.data.prize.push(newData);
                             } else {
-                                totalPrice = newData.actualPrice;
+                                if (newData.deposit === 0)
+                                    restPrice += newData.actualPrice;
+                                totalPrice += newData.actualPrice;
                                 newData.actualPrice = newData.actualPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                                 row.data.auction.push(newData);
                             }
                         });
-                        row.totalPrice = '(가격 총합 : ' + totalPrice + ')';
+                        totalPrice = totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
+                        restPrice = restPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
+                        row.totalPrice = '(합계 : ' + totalPrice + ')';
+                        row.restPrice = '(잔액 : ' + restPrice + ')';
                     })
             },
             sortBy(a, b) {
                 if (a.id > b.id) return 1;
                 else if (a.id < b.id) return -1;
                 else return 0;
+            },
+            handleDeposit(row) {
+                const data = {
+                    sellId: row.sellId
+                };
+                this.$axios.post('/api/send/deposit', data)
+                    .then(() => {
+                        this.$message({
+                            message: "입금 완료",
+                            type: "success"
+                        });
+                        this.tableData.forEach(element => {
+                            this.getProps(element);
+                        });
+                    })
+                    .catch((err) => {
+                        this.$message.error("입금 실패 " + err);
+                    })
+            },
+            handleCancel(row) {
+                const data = {
+                    sellId: row.sellId
+                };
+                this.$axios.post('/api/send/cancel', data)
+                    .then(() => {
+                        this.$message({
+                            message: "취소 완료",
+                            type: "success"
+                        });
+                        this.tableData.forEach(element => {
+                            this.getProps(element);
+                        })
+                    })
+                    .catch((err) => {
+                        this.$message.error("취소 실패 " + err);
+                    })
+            },
+            auctionClass({row}) {
+                if (row.deposit === 0) {
+                    return 'row-auction';
+                } else {
+                    return 'row-auctipn-deposit'
+                }
+            },
+            recipantClass({row}) {
+                if (row.restPrice === '(잔액 : 0)') {
+                    return 'row-recipant-success'
+                }
             }
         },
         mounted() {
@@ -208,6 +276,9 @@
         background: oldlace;
     }
     .el-table .row-prize {
+        background: #f0f9eb;
+    }
+    .el-table .row-auction-deposit {
         background: #f0f9eb;
     }
 </style>

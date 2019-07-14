@@ -118,6 +118,20 @@ router.post('/send/props', function(req, res, next) {
     controller.sell.sendList(req, res, row);
 });
 
+router.post('/send/deposit', function(req, res, next) {
+    const row = {
+        sellId: req.body.sellId
+    };
+    controller.sell.deposit(req, res, row);
+});
+
+router.post('/send/cancel', function(req, res, next) {
+    const row = {
+        sellId: req.body.sellId
+    };
+    controller.sell.cancel(req, res, row);
+})
+
 router.post('/recipant/delete', function(req, res, next) {
     const row = {
         recipantId: req.body.recipantId

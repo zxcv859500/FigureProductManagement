@@ -56,11 +56,39 @@ module.exports = {
             })
     },
     sendList(req, res, row) {
-        models.sequelize.query('SELECT date, name, actualPrice FROM sell natural join product natural join sellapply where recipantId=' + row.recipantId + ' and date=' + '"' + row.date + '"',
+        models.sequelize.query('SELECT sellId, date, name, deposit, actualPrice FROM sell natural join product natural join sellapply where recipantId=' + row.recipantId + ' and date=' + '"' + row.date + '"',
             { type: models.Sequelize.QueryTypes.SELECT })
             .then((result => {
                 res.send(result);
             }))
+            .catch((err) => {
+                res.send(err);
+            })
+    },
+    deposit(req, res, row) {
+        models.sell.update({
+            deposit: true
+        }, { where : {
+            sellId: row.sellId
+            }
+        })
+            .then(() => {
+                res.sendStatus(200);
+            })
+            .catch((err) => {
+                res.send(err);
+            })
+    },
+    cancel(req, res, row) {
+        models.sell.update({
+            deposit: false
+        }, { where : {
+            sellId: row.sellId
+            }
+        })
+            .then(() => {
+                res.sendStatus(200);
+            })
             .catch((err) => {
                 res.send(err);
             })

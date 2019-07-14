@@ -19,6 +19,9 @@ module.exports = (sequelize) => {
         date: {
             type: Sequelize.DATE,
             notNull: true
+        },
+        deposit: {
+            type: Sequelize.BOOLEAN
         }
     },{
         classMethods: {},

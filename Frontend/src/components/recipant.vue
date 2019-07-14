@@ -68,7 +68,7 @@
                 prop="address"
                 label="배송지"
                 column-key="address"
-                width="800px"
+                width="700px"
                 resizable>
             </el-table-column>
             <el-table-column
