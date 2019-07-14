@@ -55,7 +55,9 @@
                 </template>
             </el-table-column>
             <el-table-column
-                label="번호">
+                label="번호"
+                sortable
+                @sort-method="sortBy">
                 <template slot-scope="scope">
                     {{ scope.row.id + ' ' + scope.row.totalPrice }}
                 </template>
@@ -156,6 +158,11 @@
                         });
                         row.totalPrice = '(가격 총합 : ' + totalPrice + ')';
                     })
+            },
+            sortBy(a, b) {
+                if (a.id > b.id) return 1;
+                else if (a.id < b.id) return -1;
+                else return 0;
             }
         },
         mounted() {
