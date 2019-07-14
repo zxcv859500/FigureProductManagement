@@ -55,8 +55,10 @@
                 </template>
             </el-table-column>
             <el-table-column
-                prop="id"
                 label="번호">
+                <template slot-scope="scope">
+                    {{ scope.row.id + ' ' + scope.row.totalPrice }}
+                </template>
             </el-table-column>
             <el-table-column
                 prop="nickname"
@@ -110,6 +112,7 @@
                                 address: ele.address,
                                 phone: ele.phone,
                                 remark: ele.remark,
+                                totalPrice: '',
                                 data: {
                                     auction: [],
                                     prize: []
@@ -117,6 +120,10 @@
                             };
                             count++;
                             this.tableData.push(newData);
+                        });
+
+                        this.tableData.forEach(element => {
+                            this.getProps(element);
                         })
                     })
                     .catch((err) => {
@@ -131,6 +138,7 @@
                     .then((res) => {
                         row.data.auction = [];
                         row.data.prize = [];
+                        let totalPrice = 0;
                         res.data.forEach((ele) => {
                             const newData = {
                                 date: ele.date,
@@ -141,10 +149,12 @@
                                 newData.actualPrice = "경품";
                                 row.data.prize.push(newData);
                             } else {
+                                totalPrice = newData.actualPrice;
                                 newData.actualPrice = newData.actualPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                                 row.data.auction.push(newData);
                             }
-                        })
+                        });
+                        row.totalPrice = '(가격 총합 : ' + totalPrice + ')';
                     })
             }
         },
