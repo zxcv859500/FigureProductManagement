@@ -78,6 +78,7 @@
                 <template slot="header" slot-scope="scope">
                     <el-input
                         v-model="search"
+                        ref="search"
                         size="mini"
                         placeholder="Type to search"
                         v-on:keydown.native="keyMonitor"></el-input>
@@ -115,6 +116,7 @@
         },
         mounted() {
             this.load();
+            this.$nextTick(() => this.$refs.search.focus());
         },
         methods: {
             handleDelete(index, row) {
