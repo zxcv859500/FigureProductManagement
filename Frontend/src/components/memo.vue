@@ -35,6 +35,14 @@
                 prop="content"
                 label="내 용">
             </el-table-column>
+            <el-table-column
+                    fixed="right"
+                    label="Operations"
+                    width="120">
+                <template slot-scope="scope">
+                    <el-button @click="onDelete(scope.row)" type="text" size="small">Delete</el-button>
+                </template>
+            </el-table-column>
         </el-table>
     </div>
 </template>
@@ -81,6 +89,22 @@
                             this.tableData.push(newData);
                         });
                         this.tableData = this.tableData.reverse();
+                    })
+            },
+            onDelete(row) {
+                const data = {
+                    memoId: row.memoId
+                };
+                this.$axios.post('/api/memo/delete', data)
+                    .then(() => {
+                        this.$message({
+                            message: "삭제 성공",
+                            type: "success"
+                        });
+                        this.load();
+                    })
+                    .catch((err) => {
+                        this.$message.error("삭제 실패 " + err);
                     })
             }
         },

@@ -21,5 +21,16 @@ module.exports = {
             .catch((err) => {
                 res.send(err);
             })
+    },
+    delete(req, res, row) {
+        models.memo.destroy({
+            where: { memoId: row.memoId }
+        })
+            .then(() => {
+                res.sendStatus(200);
+            })
+            .catch(err => {
+                res.send(err);
+            });
     }
 }
