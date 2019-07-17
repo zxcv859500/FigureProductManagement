@@ -86,6 +86,7 @@
                     width="120">
                 <template slot-scope="scope">
                     <el-button @click="handleEdit(scope.row)" type="text" size="small">Edit</el-button>
+                    <el-button @click="handleDelete(scope.row)" type="text" size="small">Delete</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -183,6 +184,22 @@
                     })
                     .catch((err) => {
                         this.$message.error("수정 실패 " + err);
+                    })
+            },
+            handleDelete(row) {
+                const data = {
+                    sellId: row.sellId
+                };
+                this.$axios.post('/api/sell/delete', data)
+                    .then(() => {
+                        this.$message({
+                            message: "삭제 성공",
+                            type: "success"
+                        });
+                        this.load();
+                    })
+                    .catch((err) => {
+                        this.$message.error("삭제 실패 " + err);
                     })
             },
             actualPriceMonitor(evt) {

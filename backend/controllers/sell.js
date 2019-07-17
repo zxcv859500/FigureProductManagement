@@ -25,6 +25,17 @@ module.exports = {
                     })
             })
     },
+    delete(req, res, row) {
+        models.sell.destroy({
+            where: { sellId: row.sellId }
+        })
+            .then(()=> {
+                res.sendStatus(200);
+            })
+            .catch((err) => {
+                res.send(err);
+            })
+    },
     insert(req, res, row) {
         let recipantId, sellId;
         Promise.all([

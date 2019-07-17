@@ -80,6 +80,13 @@ router.post('/sell/update', function(req, res, next) {
     controller.sell.update(req, res, row);
 });
 
+router.post('/sell/delete', function(req, res, next) {
+    const row = {
+        sellId : req.body.sellId
+    };
+    controller.sell.delete(req, res, row);
+})
+
 router.post('/product/delete', function(req, res, next) {
     const row = {
         id: req.body.id
