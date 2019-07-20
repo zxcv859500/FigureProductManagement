@@ -1,11 +1,18 @@
 <template>
     <div class="send">
-        <el-date-picker
-                v-model="date"
-                type="date"
-                placeholder="Pick a day"
-                @change="loadRecipant">
-        </el-date-picker>
+        <el-col :span="8">
+            <el-date-picker
+                    v-model="date"
+                    type="date"
+                    placeholder="Pick a day"
+                    @change="loadRecipant">
+            </el-date-picker>
+        </el-col>
+        <el-col :span="16">
+            <div id="total-rest-price">
+                <span style="color:red">총 잔여금: {{ totalRestPriceShow }}</span>
+            </div>
+        </el-col>
         <el-table
             :data="tableData"
             style="width: 100%"
@@ -104,7 +111,8 @@
         data() {
             return {
                 tableData: [],
-                date: ''
+                date: '',
+                totalRestPrice: 0
             }
         },
         methods: {
@@ -115,6 +123,7 @@
                 this.$axios.post('/api/send/list', { today: today })
                     .then((res) => {
                         this.tableData = [];
+                        this.totalRestPrice = 0;
                         let count = 1;
                         res.data.forEach((ele) => {
                             const newData = {
@@ -173,6 +182,7 @@
                                 row.data.auction.push(newData);
                             }
                         });
+                        this.totalRestPrice += restPrice;
                         totalPrice = totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
                         restPrice = restPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
                         row.totalPrice = '(합계 : ' + totalPrice + ')';
@@ -264,6 +274,11 @@
             String.prototype.zf = function (len) { return "0".string(len - this.length) + this; };
             Number.prototype.zf = function (len) { return this.toString().zf(len); };
             this.loadRecipant();
+        },
+        computed: {
+            totalRestPriceShow: function(value) {
+                return this.totalRestPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
+            }
         }
     }
 </script>
