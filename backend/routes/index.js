@@ -74,8 +74,10 @@ router.post('/sell/update', function(req, res, next) {
     const row = {
         nickname: req.body.recipant,
         sellId: req.body.sellId,
-        actualPrice: req.body.actualPrice.replace(/,/gi, '')
+        actualPrice: req.body.actualPrice.replace(/,/gi, ''),
+        date: new Date(req.body.date)
     };
+    row.date.setDate(row.date.getDate() + 1);
 
     controller.sell.update(req, res, row);
 });
@@ -85,7 +87,7 @@ router.post('/sell/delete', function(req, res, next) {
         sellId : req.body.sellId
     };
     controller.sell.delete(req, res, row);
-})
+});
 
 router.post('/product/delete', function(req, res, next) {
     const row = {

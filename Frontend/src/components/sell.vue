@@ -14,7 +14,7 @@
                                 @keyup.native="actualPriceMonitor"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="22">
+                <el-col :span="11">
                     <el-form-item label="구매자">
                         <el-select v-model="form.recipant" filterable placholder="Search and select">
                             <el-option
@@ -24,6 +24,15 @@
                                     :value="item.nickname">
                             </el-option>
                         </el-select>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="11">
+                    <el-form-item label="판매 날짜">
+                        <el-date-picker
+                            v-model="form.date"
+                            type="date"
+                            placeholder="Pick a day">
+                        </el-date-picker>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -106,7 +115,8 @@
                     sellId: 0,
                     barcode: '',
                     actualPrice: '',
-                    recipant: ''
+                    recipant: '',
+                    date: ''
                 },
                 recipants: []
             }
@@ -169,7 +179,8 @@
                     sellId: row.sellId,
                     barcode: row.barcode,
                     actualPrice: row.actualPrice,
-                    recipant: row.recipant.split('(')[0]
+                    recipant: row.recipant.split('(')[0],
+                    date: row.date
                 };
                 window.scrollTo(0, 0);
             },

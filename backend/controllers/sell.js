@@ -13,7 +13,8 @@ module.exports = {
 
                 Promise.all([
                     models.sell.update({
-                        actualPrice: row.actualPrice
+                        actualPrice: row.actualPrice,
+                        date: row.date
                     }, { where: { sellId: row.sellId }}),
                     models.sequelize.query('UPDATE sellapply SET recipantId=' + recipantId + ' WHERE sellId=' + row.sellId)
                 ])
