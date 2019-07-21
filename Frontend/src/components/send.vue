@@ -101,6 +101,12 @@
                 prop="remark"
                 label="비 고">
             </el-table-column>
+            <el-table-column
+                    align="right">
+                <template slot-scope="scope">
+                    <el-button @click="handleEdit(scope.row)" type="text" size="small">Edit</el-button>
+                </template>
+            </el-table-column>
         </el-table>
     </div>
 </template>
@@ -229,6 +235,34 @@
                     .catch((err) => {
                         this.$message.error("취소 실패 " + err);
                     })
+            },
+            handleEdit(row) {
+                this.$prompt('수정할 내용을 입력해주세요.', '비고 수정', {
+                    confirmButtonText: '확인',
+                    cancelButtonText: "취소",
+                }).then(({ value }) => {
+                    const form = {
+                        recipantId: row.recipantId,
+                        nickname: row.nickname,
+                        name: row.name,
+                        address: row.address,
+                        phone: row.phone,
+                        remark: value
+                    };
+
+                    this.$axios.post('/api/recipant/insert', form)
+                        .then(() => {
+                            this.$message({
+                                message: "수정 완료",
+                                type: "success"
+                            });
+                            this.loadRecipant();
+                        })
+                        .catch((err) => {
+                            this.$message.error("수정 실패");
+                            console.log(err);
+                        })
+                })
             },
             auctionClass({row}) {
                 if (row.deposit === 0) {

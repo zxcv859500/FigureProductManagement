@@ -26,7 +26,6 @@ module.exports = {
                     res.sendStatus(200);
                 }
                 else {
-                    console.log("hi");
                     models.recipant.create({
                         nickname: row.nickname,
                         name: row.name,
