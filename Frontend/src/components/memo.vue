@@ -62,10 +62,12 @@
             onEnter() {
                 this.$axios.post('/api/memo/insert', this.form)
                     .then((result) => {
+                        /*
                         this.$message({
                             message: "등록 성공",
                             type: "success"
                         });
+                         */
                         this.load();
                         this.form.content = '';
                     })
@@ -97,10 +99,12 @@
                 };
                 this.$axios.post('/api/memo/delete', data)
                     .then(() => {
+                        /*
                         this.$message({
                             message: "삭제 성공",
                             type: "success"
                         });
+                         */
                         this.load();
                     })
                     .catch((err) => {

@@ -77,7 +77,7 @@
                 <template slot-scope="scope">
                     {{ scope.row.id }} <br>
                     <span style="color:blue">{{ scope.row.totalPrice }}</span> <br>
-                    <span style="color:red">{{ scope.row.restPrice }}</span>
+                    <span style="color:red">(잔액 : {{ scope.row.restPrice }})</span>
                 </template>
             </el-table-column>
             <el-table-column
@@ -192,7 +192,7 @@
                         totalPrice = totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
                         restPrice = restPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
                         row.totalPrice = '(합계 : ' + totalPrice + ')';
-                        row.restPrice = '(잔액 : ' + restPrice + ')';
+                        row.restPrice = restPrice;
                     })
             },
             sortBy(a, b) {
@@ -206,10 +206,12 @@
                 };
                 this.$axios.post('/api/send/deposit', data)
                     .then(() => {
+                        /*
                         this.$message({
                             message: "입금 완료",
                             type: "success"
                         });
+                        */
                         this.tableData.forEach(element => {
                             this.getProps(element);
                         });
@@ -224,10 +226,12 @@
                 };
                 this.$axios.post('/api/send/cancel', data)
                     .then(() => {
+                        /*
                         this.$message({
                             message: "취소 완료",
                             type: "success"
                         });
+                        */
                         this.tableData.forEach(element => {
                             this.getProps(element);
                         })
@@ -252,10 +256,12 @@
 
                     this.$axios.post('/api/recipant/insert', form)
                         .then(() => {
+                            /*
                             this.$message({
                                 message: "수정 완료",
                                 type: "success"
                             });
+                             */
                             this.loadRecipant();
                         })
                         .catch((err) => {
@@ -311,7 +317,13 @@
         },
         computed: {
             totalRestPriceShow: function(value) {
-                return this.totalRestPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
+                let total = 0;
+
+                this.tableData.forEach((element) => {
+                    total += Number(element.restPrice.replace(/,/gi, ''));
+                });
+
+                return total.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
             }
         }
     }

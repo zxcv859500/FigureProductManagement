@@ -137,10 +137,12 @@
             onClick() {
                 this.$axios.post('/api/recipant/insert', this.form)
                     .then(() => {
+                        /*
                         this.$message({
                             message: "수령인 등록에 성공했습니다.",
                             type: 'success'
                         });
+                         */
                         this.form.recipantId = 0;
                         this.form.nickname = '';
                         this.form.name = '';
@@ -157,11 +159,12 @@
             onDelete(row) {
                 this.$axios.post('/api/recipant/delete', { recipantId: row.id })
                     .then(() => {
+                        /*
                         this.$message({
                             message: "삭제 성공",
                             type: 'success'
                         });
-
+                        */
                         this.load();
                     })
             },

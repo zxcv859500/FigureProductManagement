@@ -187,10 +187,12 @@
             onEdit() {
                 this.$axios.post('/api/sell/update', this.form)
                     .then(() => {
+                        /*
                         this.$message({
                             message: "수정 성공",
                             type: "success"
                         });
+                         */
                         this.load();
                     })
                     .catch((err) => {
@@ -203,10 +205,12 @@
                 };
                 this.$axios.post('/api/sell/delete', data)
                     .then(() => {
+                        /*
                         this.$message({
                             message: "삭제 성공",
                             type: "success"
                         });
+                         */
                         this.load();
                     })
                     .catch((err) => {

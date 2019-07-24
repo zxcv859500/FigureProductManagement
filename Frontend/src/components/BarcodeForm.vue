@@ -122,10 +122,12 @@
                             if (!isNaN(this.form.stockPrice)) {
                                 this.form.stockPrice = this.form.stockPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             }
+                            /*
                             this.$message({
                                 message: "정상적으로 판매되었습니다.",
                                 type: 'success'
                             });
+                            */
                             this.form.actualPrice = '';
                             this.form.recipant = '';
                             this.$nextTick(() => this.$refs.barcode.focus());

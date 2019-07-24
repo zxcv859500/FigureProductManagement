@@ -126,10 +126,12 @@
                 this.$axios.post('/api/product/delete', data)
                     .then(() => {
                         this.load();
+                        /*
                         this.$message({
                             message: "정상적으로 삭제되었습니다.",
                             type: 'success'
                         })
+                         */
                     })
                     .catch((err) => {
                         this.$message.error("삭제에 실패했습니다. ", err);
@@ -176,10 +178,13 @@
             onEdit() {
                 this.$axios.post('/api/product/update', this.form)
                     .then(() => {
+                        /*
                         this.$message({
                             message: "수정 성공",
                             type: "success"
                         });
+                        */
+                         */
                         this.load();
                     })
                     .catch((err) => {
