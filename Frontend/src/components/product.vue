@@ -184,7 +184,6 @@
                             type: "success"
                         });
                         */
-                         */
                         this.load();
                     })
                     .catch((err) => {
