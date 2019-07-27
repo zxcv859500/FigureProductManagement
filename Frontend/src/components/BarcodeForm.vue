@@ -43,7 +43,7 @@
             </el-col>
             <el-col :span="11">
                 <el-form-item label="구매자" v-if="mode">
-                    <el-select v-model="form.recipant" filterable placholder="Search and select">
+                    <el-select v-model="form.recipant" filterable placeholder="Search and select">
                         <el-option
                             v-for="item in recipants"
                             :key="item.nickname"
