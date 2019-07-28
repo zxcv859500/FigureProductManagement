@@ -167,6 +167,28 @@ router.post('/memo/delete', function(req, res, next) {
     controller.memo.delete(req, res, row);
 });
 
+router.get('/consignment/list', function(req, res, next) {
+    controller.consignment.list(req.body)
+        .then((result) => {
+            res.send(result);
+        })
+        .catch((err) => {
+            res.send(err);
+        })
+});
+
+router.post('/consignment/insert', function(req, res, next) {
+    req.body.date = new Date();
+
+    controller.consignment.insert(req.body)
+        .then(() => {
+            res.sendStatus(200);
+        })
+        .catch((err) => {
+            res.send(err);
+        })
+});
+
 Date.prototype.format = function (f) {
     if (!this.valueOf()) return " ";
     var weekKorName = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
