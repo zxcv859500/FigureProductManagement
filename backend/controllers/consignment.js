@@ -6,7 +6,7 @@ module.exports = {
         const { date } = params;
 
         return await models.sequelize
-            .query(format('SELECT * FROM consignment natural join recipant where date=%s', date),
+            .query(format('SELECT * FROM consignment natural join recipant where date="%s"', date),
                 {type: models.Sequelize.QueryTypes.SELECT});
     },
 
@@ -19,7 +19,7 @@ module.exports = {
 
         return await models.consignment.create({
             date: date,
-            name: name,
+            productName: name,
             price: price,
             recipantId: recipant.recipantId
         })

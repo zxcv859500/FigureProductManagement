@@ -167,7 +167,7 @@ router.post('/memo/delete', function(req, res, next) {
     controller.memo.delete(req, res, row);
 });
 
-router.get('/consignment/list', function(req, res, next) {
+router.post('/consignment/list', function(req, res, next) {
     controller.consignment.list(req.body)
         .then((result) => {
             res.send(result);
@@ -179,6 +179,7 @@ router.get('/consignment/list', function(req, res, next) {
 
 router.post('/consignment/insert', function(req, res, next) {
     req.body.date = new Date();
+    req.body.price = req.body.price.replace(/,/gi, '');
 
     controller.consignment.insert(req.body)
         .then(() => {

@@ -12,7 +12,7 @@ module.exports = (sequelize) => {
             type: Sequelize.DATE,
             notNull: true
         },
-        name: {
+        productName: {
             type: Sequelize.STRING,
             notNull: true
         },
