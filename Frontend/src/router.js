@@ -11,7 +11,7 @@ import Consignment from './components/consignment.vue'
 Vue.use(Router);
 
 export default new Router({
-  mode: 'history',
+  // mode: 'history',
   base: process.env.BASE_URL,
   routes: [
     {
