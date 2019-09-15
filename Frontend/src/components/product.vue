@@ -120,22 +120,28 @@
         },
         methods: {
             handleDelete(index, row) {
-                const data = {
-                    id: row.id
-                };
-                this.$axios.post('/api/product/delete', data)
-                    .then(() => {
-                        this.load();
-                        /*
-                        this.$message({
-                            message: "정상적으로 삭제되었습니다.",
-                            type: 'success'
+                this.$confirm("삭제 확인", 'Warning', {
+                    confirmButtonText: 'OK',
+                    cancelButtonText: 'Cancel',
+                    type: 'warning'
+                }).then(() => {
+                    const data = {
+                        id: row.id
+                    };
+                    this.$axios.post('/api/product/delete', data)
+                        .then(() => {
+                            this.load();
+                            /*
+                            this.$message({
+                                message: "정상적으로 삭제되었습니다.",
+                                type: 'success'
+                            })
+                             */
                         })
-                         */
-                    })
-                    .catch((err) => {
-                        this.$message.error("삭제에 실패했습니다. ", err);
-                    })
+                        .catch((err) => {
+                            this.$message.error("삭제에 실패했습니다. ", err);
+                        })
+                })
             },
             load() {
                 this.sumPrice = 0;

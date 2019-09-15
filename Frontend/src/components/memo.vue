@@ -94,22 +94,28 @@
                     })
             },
             onDelete(row) {
-                const data = {
-                    memoId: row.memoId
-                };
-                this.$axios.post('/api/memo/delete', data)
-                    .then(() => {
-                        /*
-                        this.$message({
-                            message: "삭제 성공",
-                            type: "success"
-                        });
-                         */
-                        this.load();
-                    })
-                    .catch((err) => {
-                        this.$message.error("삭제 실패 " + err);
-                    })
+                this.$confirm("삭제 확인", 'Warning', {
+                    confirmButtonText: 'OK',
+                    cancelButtonText: 'Cancel',
+                    type: 'warning'
+                }).then(() => {
+                    const data = {
+                        memoId: row.memoId
+                    };
+                    this.$axios.post('/api/memo/delete', data)
+                        .then(() => {
+                            /*
+                            this.$message({
+                                message: "삭제 성공",
+                                type: "success"
+                            });
+                             */
+                            this.load();
+                        })
+                        .catch((err) => {
+                            this.$message.error("삭제 실패 " + err);
+                        })
+                })
             }
         },
         mounted() {

@@ -200,22 +200,28 @@
                     })
             },
             handleDelete(row) {
-                const data = {
-                    sellId: row.sellId
-                };
-                this.$axios.post('/api/sell/delete', data)
-                    .then(() => {
-                        /*
-                        this.$message({
-                            message: "삭제 성공",
-                            type: "success"
-                        });
-                         */
-                        this.load();
-                    })
-                    .catch((err) => {
-                        this.$message.error("삭제 실패 " + err);
-                    })
+                this.$confirm("삭제 확인", "Warning", {
+                    confirmButtonText: 'OK',
+                    cancelButtonText: 'Cancel',
+                    type: 'warning'
+                }).then(() => {
+                    const data = {
+                        sellId: row.sellId
+                    };
+                    this.$axios.post('/api/sell/delete', data)
+                        .then(() => {
+                            /*
+                            this.$message({
+                                message: "삭제 성공",
+                                type: "success"
+                            });
+                             */
+                            this.load();
+                        })
+                        .catch((err) => {
+                            this.$message.error("삭제 실패 " + err);
+                        })
+                })
             },
             actualPriceMonitor(evt) {
                 this.form.actualPrice = this.form.actualPrice.replace(/,/gi, "");

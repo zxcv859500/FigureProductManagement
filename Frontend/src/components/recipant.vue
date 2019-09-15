@@ -157,16 +157,16 @@
                     })
             },
             onDelete(row) {
-                this.$axios.post('/api/recipant/delete', { recipantId: row.id })
-                    .then(() => {
-                        /*
-                        this.$message({
-                            message: "삭제 성공",
-                            type: 'success'
-                        });
-                        */
-                        this.load();
-                    })
+                this.$confirm("삭제 확인", "Warning", {
+                    confirmButtonText: 'OK',
+                    cancelButtonText: 'Cancel',
+                    type: 'warning'
+                }).then(() => {
+                    this.$axios.post('/api/recipant/delete', { recipantId: row.id })
+                        .then(() => {
+                            this.load();
+                        })
+                })
             },
             onEdit(row) {
                 this.form = {
