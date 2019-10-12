@@ -8,14 +8,14 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="11">
-                    <el-form-item label="판매 가격">
+                    <el-form-item label="유찰 가격">
                         <el-input
-                                v-model="form.price"
+                                v-model="form.acceptPrice"
                                 @keyup.native="priceMonitor"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="11">
-                    <el-form-item label="구매자">
+                    <el-form-item label="위탁자">
                         <el-select v-model="form.nickname" filterable placeholder="Search and select">
                             <el-option
                                 v-for="item in recipants"
@@ -43,15 +43,15 @@
             <el-table :data="tableData">
                 <el-table-column
                     prop="name"
-                    label="제품 이름">
+                    label="상품 이름">
                 </el-table-column>
                 <el-table-column
-                    prop="price"
-                    label="판매 가격">
+                    prop="acceptPrice"
+                    label="유찰 가격">
                 </el-table-column>
                 <el-table-column
                     prop="nickname"
-                    label="구매자">
+                    label="위탁자">
                 </el-table-column>
                 <el-table-column
                     prop="address"
@@ -78,7 +78,7 @@
             return {
                 form: {
                     name: '',
-                    price: '',
+                    acceptPrice: '',
                     nickname: ''
                 },
                 recipants: [],
@@ -158,7 +158,7 @@
                         res.data.forEach((ele) => {
                             const newData = {
                                 name: ele.productName,
-                                price: ele.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g,','),
+                                acceptPrice: ele.acceptPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g,','),
                                 nickname: format('%s(%s)', ele.nickname, ele.name),
                                 address: ele.address,
                                 phone: ele.phone,
@@ -170,8 +170,8 @@
                     })
             },
             priceMonitor() {
-                this.form.price = this.form.price.replace(/,/gi, "");
-                this.form.price = this.form.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                this.form.acceptPrice = this.form.acceptPrice.replace(/,/gi, "");
+                this.form.acceptPrice = this.form.acceptPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
         }
     }

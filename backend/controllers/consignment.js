@@ -11,7 +11,7 @@ module.exports = {
     },
 
     async insert(params) {
-        const { date, name, price, nickname } = params;
+        const { date, name, acceptPrice, nickname } = params;
 
         const recipant = await models.recipant.findOne({
             where: { nickname: nickname }
@@ -20,7 +20,7 @@ module.exports = {
         return await models.consignment.create({
             date: date,
             productName: name,
-            price: price,
+            acceptPrice: acceptPrice,
             recipantId: recipant.recipantId
         })
     }

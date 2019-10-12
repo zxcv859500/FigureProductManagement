@@ -178,8 +178,9 @@ router.post('/consignment/list', function(req, res, next) {
 });
 
 router.post('/consignment/insert', function(req, res, next) {
-    req.body.date = new Date();
-    req.body.price = req.body.price.replace(/,/gi, '');
+    req.body.date = new Date().toLocaleDateString();
+    req.body.acceptPrice = req.body.acceptPrice.replace(/,/gi, '');
+    req.body.date = req.body.date.replace(/. /gi, '-');
 
     controller.consignment.insert(req.body)
         .then(() => {
