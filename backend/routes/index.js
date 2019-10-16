@@ -20,8 +20,6 @@ router.post('/sell', function(req, res, next) {
         nickname: req.body.recipant
     };
 
-    console.log(row.date);
-
     if (!row.barcode) {
         res.status(500).send("Barcode empty");
     } else if (row.actualPrice === '') {
@@ -183,6 +181,25 @@ router.post('/consignment/insert', function(req, res, next) {
     req.body.date = req.body.date.replace(/. /gi, '-');
 
     controller.consignment.insert(req.body)
+        .then(() => {
+            res.sendStatus(200);
+        })
+        .catch((err) => {
+            res.send(err);
+        })
+});
+
+router.post('/consignment/sell', function(req, res, next) {
+    const row = {
+        consignmentId: req.body.consignmentId,
+        barcode: '',
+        actualPrice: req.body.sellPrice.replace(/,/gi, ''),
+        date: new Date(),
+        seller: req.body.nickname,
+        nickname: req.body.buyer
+    };
+
+    controller.consignment.sell(row)
         .then(() => {
             res.sendStatus(200);
         })

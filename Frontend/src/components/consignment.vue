@@ -65,8 +65,48 @@
                     prop="remark"
                     label="비고">
                 </el-table-column>
+                <el-table-column
+                    label="판매">
+                    <template slot-scope="scope">
+                        <el-button
+                            size="mini"
+                            @click="sellDialog(scope.$index)">판매</el-button>
+                    </template>
+                </el-table-column>
             </el-table>
         </div>
+        <el-col :span="5">
+            <el-dialog title="판매" :visible.sync="dialogFormVisible">
+                <el-form :model="sellForm">
+                    <el-col :span="24">
+                        <el-form-item label="구매자">
+                            <el-col :span="12">
+                                <el-select v-model="sellForm.buyer" filterable placeholder="Search and select">
+                                    <el-option
+                                            v-for="item in recipants"
+                                            :key="item.nickname"
+                                            :label="item.nickname"
+                                            :value="item.nickname">
+                                    </el-option>
+                                </el-select>
+                            </el-col>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="24">
+                        <el-form-item label="판매가">
+                            <el-col :span="6">
+                                <el-input v-model="sellForm.sellPrice"
+                                          @keyup.native="priceMonitor"></el-input>
+                            </el-col>
+                        </el-form-item>
+                    </el-col>
+                </el-form>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible=false">취소</el-button>
+                    <el-button type="primary" @click="sell()">확인</el-button>
+                </span>
+            </el-dialog>
+        </el-col>
     </div>
 </template>
 
@@ -83,7 +123,16 @@
                 },
                 recipants: [],
                 tableData: [],
-                date: ''
+                date: '',
+                dialogFormVisible: false,
+                sellForm: {
+                    consignmentId: '',
+                    name: '',
+                    acceptPrice: '',
+                    nickname: '',
+                    sellPrice: '',
+                    buyer: ''
+                }
             }
         },
         mounted() {
@@ -149,14 +198,16 @@
                     })
             },
             loadConsignment() {
+                // TODO: 팔린 것이면 목록에서 제외되게
                 let today;
-                if (this.date === "") today = new Date().format('yyyy-MM-dd');
+                if (this.date === "") today = "";
                 else today = this.date.format('yyyy-MM-dd');
                 this.$axios.post('/api/consignment/list', { date: today })
                     .then((res) => {
                         this.tableData = [];
                         res.data.forEach((ele) => {
                             const newData = {
+                                consignmentId: ele.consignmentId,
                                 name: ele.productName,
                                 acceptPrice: ele.acceptPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g,','),
                                 nickname: format('%s(%s)', ele.nickname, ele.name),
@@ -164,7 +215,6 @@
                                 phone: ele.phone,
                                 remark: ele.remark
                             };
-                            console.log(newData);
                             this.tableData.push(newData);
                         })
                     })
@@ -172,6 +222,24 @@
             priceMonitor() {
                 this.form.acceptPrice = this.form.acceptPrice.replace(/,/gi, "");
                 this.form.acceptPrice = this.form.acceptPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                this.sellForm.sellPrice = this.sellForm.sellPrice.replace(/,/gi, "");
+                this.sellForm.sellPrice = this.sellForm.sellPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            },
+            sellDialog(index) {
+                this.dialogFormVisible=true;
+                this.sellForm.consignmentId = this.tableData[index].consignmentId;
+                this.sellForm.name = this.tableData[index].name;
+                this.sellForm.acceptPrice = this.tableData[index].acceptPrice;
+                this.sellForm.nickname = this.tableData[index].nickname.split('(')[0];
+            },
+            sell() {
+                this.dialogFormVisible=false;
+                this.$axios.post('/api/consignment/sell', this.sellForm)
+                    .then(() => {
+                        this.sellForm.buyer = '';
+                        this.sellForm.sellPrice = '';
+                        this.loadConsignment();
+                    })
             }
         }
     }

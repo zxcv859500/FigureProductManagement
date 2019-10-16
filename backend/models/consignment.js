@@ -23,6 +23,12 @@ module.exports = (sequelize) => {
         recipantId: {
             type: Sequelize.INTEGER,
             notNull: true
+        },
+        keep: {
+            type: Sequelize.BOOLEAN,
+        },
+        sold: {
+            type: Sequelize.BOOLEAN
         }
     }, {
         classMethods: {},
