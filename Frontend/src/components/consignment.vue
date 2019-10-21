@@ -54,10 +54,6 @@
                     label="위탁자">
                 </el-table-column>
                 <el-table-column
-                    prop="address"
-                    label="주소">
-                </el-table-column>
-                <el-table-column
                     prop="phone"
                     label="번호">
                 </el-table-column>

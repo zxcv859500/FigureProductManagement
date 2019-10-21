@@ -23,7 +23,7 @@ module.exports = {
 
         return await models.consignment.create({
             date: date,
-            productName: name,
+            productName: "[위탁]" + name,
             acceptPrice: acceptPrice,
             recipantId: recipant.recipantId
         })
