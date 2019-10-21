@@ -70,6 +70,7 @@
                     <template slot-scope="scope">
                         <el-button
                             size="mini"
+                            v-if="tableData[scope.$index].sold === 0"
                             @click="sellDialog(scope.$index)">판매</el-button>
                     </template>
                 </el-table-column>
@@ -213,7 +214,8 @@
                                 nickname: format('%s(%s)', ele.nickname, ele.name),
                                 address: ele.address,
                                 phone: ele.phone,
-                                remark: ele.remark
+                                remark: ele.remark,
+                                sold: ele.sold
                             };
                             this.tableData.push(newData);
                         })

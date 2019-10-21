@@ -1,17 +1,15 @@
 const models = require('../models');
-const { format } = require('util');
-
 module.exports = {
     async list(params) {
         const { date } = params;
 
         if (date === "") {
             return await models.sequelize
-                .query(format('SELECT * FROM consignment natural join recipant where sold=0'),
+                .query(format('SELECT * FROM consignment natural join recipant'),
                     {type: models.Sequelize.QueryTypes.SELECT});
         } else {
             return await models.sequelize
-                .query(format('SELECT * FROM consignment natural join recipant where sold=0 and date="%s"', date),
+                .query(format('SELECT * FROM consignment natural join recipant date="%s"', date),
                     {type: models.Sequelize.QueryTypes.SELECT});
         }
     },
@@ -58,3 +56,5 @@ module.exports = {
             });
     }
 };
+
+const { format } = require('util');
