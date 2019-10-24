@@ -301,7 +301,6 @@
                 this.$axios.post('/api/consignment/actualPrice', { date: today, recipantId: row.recipantId })
                     .then((res) => {
                         let totalPrice = 0;
-                        console.log(res.data);
                         res.data.forEach((ele) => {
                             totalPrice += ele.deposit;
                         });
