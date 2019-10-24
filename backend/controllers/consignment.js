@@ -5,11 +5,11 @@ module.exports = {
 
         if (date === "") {
             return await models.sequelize
-                .query(format('SELECT * FROM consignment natural join recipant'),
+                .query(format('SELECT DISTINCT recipantId, nickname, phone, remark, name FROM consignment natural join recipant'),
                     {type: models.Sequelize.QueryTypes.SELECT});
         } else {
             return await models.sequelize
-                .query(format('SELECT * FROM consignment natural join recipant date="%s"', date),
+                .query(format('SELECT DISTINCT recipantId, nickname, phone, remark, name FROM consignment natural join recipant date="%s"', date),
                     {type: models.Sequelize.QueryTypes.SELECT});
         }
     },
@@ -53,7 +53,49 @@ module.exports = {
                 models.consignment.update({
                     sold: true
                 }, { where: { consignmentId: consignmentId }});
+                models.consignment.update({
+                    deposit: params.actualPrice
+                }, {where: { consignmentId: consignmentId }})
             });
+    },
+
+    async getProps(params) {
+        if (params.date !== undefined) {
+            return await models.sequelize.query('SELECT date, name, sold, consignmentId, acceptPrice from (SELECT productName as name, consignmentId, sold, date, recipantId, acceptPrice FROM consignment)a where recipantId=' + params.recipantId + ' and date=' + '"' + params.date + '"',
+                {type: models.Sequelize.QueryTypes.SELECT})
+                .then((res) => {
+                    return res;
+                })
+        } else {
+            const result = models.sequelize.query('SELECT date, name, sold, consignmentId, acceptPrice from (SELECT productName as name, consignmentId, sold, date, recipantId, acceptPrice FROM consignment)a where recipantId=' + params.recipantId,
+                {type: models.Sequelize.QueryTypes.SELECT})
+                .then((res) => {
+                    return res;
+                });
+            return await result;
+        }
+    },
+
+    async actualPrice(params) {
+        if (params.today === undefined) {
+            return await models.consignment.findAll({where: {recipantId: params.recipantId}})
+                .then((res) => {
+                    return res;
+                })
+        } else {
+            return await models.consignment.findAll({where: {recipantId: params.recipantId, date: params.date}})
+                .then((res) => {
+                    return res;
+                })
+        }
+    },
+
+    async deposit(params) {
+        if (params.today === undefined) {
+            return await models.consignment.update({deposit: 0}, {where: {recipantId: params.recipantId}})
+        } else {
+            return await models.consignment.update({deposit: 0}, {where: {recipantId: params.recipantId, date: params.date}})
+        }
     }
 };
 

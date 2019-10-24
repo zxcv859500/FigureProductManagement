@@ -24,11 +24,11 @@ module.exports = (sequelize) => {
             type: Sequelize.INTEGER,
             notNull: true
         },
-        keep: {
-            type: Sequelize.BOOLEAN,
-        },
         sold: {
             type: Sequelize.BOOLEAN
+        },
+        deposit: {
+            type: Sequelize.INTEGER
         }
     }, {
         classMethods: {},

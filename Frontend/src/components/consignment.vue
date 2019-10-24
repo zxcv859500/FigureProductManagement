@@ -40,18 +40,54 @@
                     @change="loadConsignment">
                 </el-date-picker>
             </el-col>
-            <el-table :data="tableData">
+            <el-table
+                    :data="tableData"
+                    style="width: 100%"
+                    :border="true">
                 <el-table-column
-                    prop="name"
-                    label="상품 이름">
+                    type="expand">
+                    <template slot-scope="props">
+                        <el-table
+                            :data="props.row.child"
+                            style="width: 100%">
+                            <el-table-column
+                                prop="number"
+                                width="30">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="date"
+                                    label="날짜">
+                            </el-table-column>
+                            <el-table-column
+                                prop="name"
+                                label="상품 이름">
+                            </el-table-column>
+                            <el-table-column
+                                prop="acceptPrice"
+                                label="유찰 가격">
+                            </el-table-column>
+                            <el-table-column>
+                                <template slot-scope="scope">
+                                    <el-button
+                                            size="mini"
+                                            v-if="scope.row.sold === 0"
+                                            @click="sellDialog(props.row, scope.row)">판매</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                    prop="acceptPrice"
-                    label="유찰 가격">
+                    prop="number"
+                    width="30">
                 </el-table-column>
                 <el-table-column
                     prop="nickname"
                     label="위탁자">
+                </el-table-column>
+                <el-table-column
+                    prop="totalPrice"
+                    label="입금 금액">
                 </el-table-column>
                 <el-table-column
                     prop="phone"
@@ -61,13 +97,11 @@
                     prop="remark"
                     label="비고">
                 </el-table-column>
-                <el-table-column
-                    label="판매">
+                <el-table-column>
                     <template slot-scope="scope">
                         <el-button
-                            size="mini"
-                            v-if="tableData[scope.$index].sold === 0"
-                            @click="sellDialog(scope.$index)">판매</el-button>
+                                size="mini"
+                                @click="deposit(scope.row)">입금</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -202,18 +236,22 @@
                 this.$axios.post('/api/consignment/list', { date: today })
                     .then((res) => {
                         this.tableData = [];
+                        let count = 1;
                         res.data.forEach((ele) => {
                             const newData = {
-                                consignmentId: ele.consignmentId,
-                                name: ele.productName,
-                                acceptPrice: ele.acceptPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g,','),
+                                number: count,
+                                recipantId: ele.recipantId,
                                 nickname: format('%s(%s)', ele.nickname, ele.name),
-                                address: ele.address,
                                 phone: ele.phone,
                                 remark: ele.remark,
-                                sold: ele.sold
+                                totalPrice: 0
                             };
                             this.tableData.push(newData);
+                            count++;
+                        });
+
+                        this.tableData.forEach((ele) => {
+                           this.getProps(ele);
                         })
                     })
             },
@@ -223,12 +261,12 @@
                 this.sellForm.sellPrice = this.sellForm.sellPrice.replace(/,/gi, "");
                 this.sellForm.sellPrice = this.sellForm.sellPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             },
-            sellDialog(index) {
+            sellDialog(parent, child) {
                 this.dialogFormVisible=true;
-                this.sellForm.consignmentId = this.tableData[index].consignmentId;
-                this.sellForm.name = this.tableData[index].name;
-                this.sellForm.acceptPrice = this.tableData[index].acceptPrice;
-                this.sellForm.nickname = this.tableData[index].nickname.split('(')[0];
+                this.sellForm.consignmentId = child.consignmentId;
+                this.sellForm.name = child.name;
+                this.sellForm.acceptPrice = parent.acceptPrice;
+                this.sellForm.nickname = parent.nickname.split('(')[0];
             },
             sell() {
                 this.dialogFormVisible=false;
@@ -236,6 +274,46 @@
                     .then(() => {
                         this.sellForm.buyer = '';
                         this.sellForm.sellPrice = '';
+                        this.loadConsignment();
+                    })
+            },
+            getProps(row) {
+                let today = undefined;
+                if (this.date !== "") today = new Date().format('yyyy-MM-dd');
+                this.$axios.post('/api/consignment/child', { date: today, recipantId: row.recipantId })
+                    .then((res) => {
+                        let count = 1;
+                        row.child = [];
+                        res.data.forEach((ele) => {
+                            const newData = {
+                                number: count,
+                                consignmentId: ele.consignmentId,
+                                date: ele.date,
+                                name: ele.name,
+                                acceptPrice: ele.acceptPrice,
+                                sold: ele.sold
+                            };
+                            newData.acceptPrice = newData.acceptPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                            row.child.push(newData);
+                        });
+                    });
+
+                this.$axios.post('/api/consignment/actualPrice', { date: today, recipantId: row.recipantId })
+                    .then((res) => {
+                        let totalPrice = 0;
+                        console.log(res.data);
+                        res.data.forEach((ele) => {
+                            totalPrice += ele.deposit;
+                        });
+                        totalPrice = totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                        row.totalPrice = totalPrice;
+                    })
+            },
+            deposit(row) {
+                let today = undefined;
+                if (this.date !== "") today = new Date().format('yyyy-MM-dd');
+                this.$axios.post('/api/consignment/deposit', { date: today, recipantId: row.recipantId })
+                    .then(() => {
                         this.loadConsignment();
                     })
             }

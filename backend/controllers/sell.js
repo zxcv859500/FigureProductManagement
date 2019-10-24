@@ -73,10 +73,10 @@ module.exports = {
             .then((res1) => {
                 models.sequelize.query('SELECT sellId, date, name, deposit, actualPrice FROM sell natural join product natural join sellapply where recipantId=' + row.recipantId + ' and date=' + '"' + row.date + '"',
                     { type: models.Sequelize.QueryTypes.SELECT })
-                    .then((result => {
+                    .then((result) => {
                         const concat = res1.concat(result);
                         res.send(concat);
-                    }))
+                    })
                     .catch((err) => {
                         res.send(err);
                     })
