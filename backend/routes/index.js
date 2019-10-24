@@ -243,6 +243,26 @@ router.post('/consignment/deposit', function(req, res, next) {
         })
 });
 
+router.post('/sell/keep', function(req, res, next) {
+   controller.sell.keep(req.body)
+       .then(() => {
+           res.sendStatus(200);
+       })
+       .catch((err) => {
+           res.send(err);
+       })
+});
+
+router.post('/sell/send', function(req, res, next) {
+   controller.sell.send(req.body)
+       .then(() => {
+           res.sendStatus(200);
+       })
+       .catch((err) => {
+           res.send(err);
+       })
+});
+
 Date.prototype.format = function (f) {
     if (!this.valueOf()) return " ";
     var weekKorName = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];

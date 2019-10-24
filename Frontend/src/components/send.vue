@@ -104,7 +104,8 @@
             <el-table-column
                     align="right">
                 <template slot-scope="scope">
-                    <el-button @click="handleEdit(scope.row)" type="text" size="small">Edit</el-button>
+                    <el-button @click="keep(scope.row)" size="small">보관</el-button>
+                    <el-button @click="handleEdit(scope.row)" size="small">수정</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -281,6 +282,24 @@
                 if (row.restPrice === '(잔액 : 0)') {
                     return 'row-recipant-success'
                 }
+            },
+            keep(row) {
+                Promise.all([
+                    row.data.auction.forEach((ele) => {
+                        this.$axios.post('/api/sell/keep', ele)
+                    }),
+                    row.data.prize.forEach((ele) => {
+                        this.$axios.post('/api/sell/keep', ele)
+                    })
+                ])
+                    .then(() => {
+                        const h = this.$createElement;
+
+                        this.$notify({
+                            title: "알림",
+                            message: h('i', { style: 'color: teal' }, '보관 완료')
+                        })
+                    })
             }
         },
         mounted() {

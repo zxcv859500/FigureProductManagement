@@ -68,22 +68,41 @@ module.exports = {
             })
     },
     sendList(req, res, row) {
-        models.sequelize.query('select sellId, date, name, deposit, actualPrice from (SELECT productName as name, consignmentId FROM consignment) as a natural join sell natural join sellapply where recipantId=' + row.recipantId + ' and date=' + '"' + row.date + '"',
-            { type: models.Sequelize.QueryTypes.SELECT })
-            .then((res1) => {
-                models.sequelize.query('SELECT sellId, date, name, deposit, actualPrice FROM sell natural join product natural join sellapply where recipantId=' + row.recipantId + ' and date=' + '"' + row.date + '"',
-                    { type: models.Sequelize.QueryTypes.SELECT })
-                    .then((result) => {
-                        const concat = res1.concat(result);
-                        res.send(concat);
-                    })
-                    .catch((err) => {
-                        res.send(err);
-                    })
-            })
-            .catch((err) => {
-                res.send(err);
-            })
+        if (row.date !== undefined) {
+            models.sequelize.query('select sellId, date, name, deposit, actualPrice from (SELECT productName as name, consignmentId FROM consignment) as a natural join sell natural join sellapply where recipantId=' + row.recipantId + ' and date=' + '"' + row.date + '"',
+                {type: models.Sequelize.QueryTypes.SELECT})
+                .then((res1) => {
+                    models.sequelize.query('SELECT sellId, date, name, deposit, actualPrice FROM sell natural join product natural join sellapply where recipantId=' + row.recipantId + ' and date=' + '"' + row.date + '"',
+                        {type: models.Sequelize.QueryTypes.SELECT})
+                        .then((result) => {
+                            const concat = res1.concat(result);
+                            res.send(concat);
+                        })
+                        .catch((err) => {
+                            res.send(err);
+                        })
+                })
+                .catch((err) => {
+                    res.send(err);
+                })
+        } else {
+            models.sequelize.query('select sellId, date, name, deposit, actualPrice from (SELECT productName as name, consignmentId FROM consignment) as a natural join sell natural join sellapply where keep = 1 and recipantId=' + row.recipantId,
+                {type: models.Sequelize.QueryTypes.SELECT})
+                .then((res1) => {
+                    models.sequelize.query('SELECT sellId, date, name, deposit, actualPrice FROM sell natural join product natural join sellapply where keep = 1 and recipantId=' + row.recipantId,
+                        {type: models.Sequelize.QueryTypes.SELECT})
+                        .then((result) => {
+                            const concat = res1.concat(result);
+                            res.send(concat);
+                        })
+                        .catch((err) => {
+                            res.send(err);
+                        })
+                })
+                .catch((err) => {
+                    res.send(err);
+                })
+        }
     },
     deposit(req, res, row) {
         models.sell.update({
@@ -112,5 +131,19 @@ module.exports = {
             .catch((err) => {
                 res.send(err);
             })
+    },
+    async keep(params) {
+        return await models.sell.update({
+            keep: true
+        }, {where: {
+            sellId: params.sellId
+        }})
+    },
+    async send(params) {
+        return await models.sell.update({
+            keep: false
+        }, {where: {
+            sellId: params.sellId
+        }})
     }
 };

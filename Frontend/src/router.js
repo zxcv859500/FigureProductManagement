@@ -7,6 +7,7 @@ import Recipant from './components/recipant.vue'
 import Send from './components/send.vue'
 import Memo from './components/memo.vue'
 import Consignment from './components/consignment.vue'
+import Keep from './components/Keep.vue'
 
 Vue.use(Router);
 
@@ -52,6 +53,11 @@ export default new Router({
       path: '/consignment',
       name: Consignment,
       components: { default: Consignment }
+    },
+    {
+      path: '/keep',
+      name: Keep,
+      components: { default: Keep }
     }
   ]
 })

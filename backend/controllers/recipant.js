@@ -41,14 +41,25 @@ module.exports = {
             })
     },
     sendList(req, res, row) {
-        models.sequelize.query('select distinct nickname, name, address, phone, remark, recipantId  from sell natural join sellapply natural join recipant where date = "' + row.date + '"',
-            { type: models.Sequelize.QueryTypes.SELECT })
-            .then((result) => {
-                res.send(result);
-            })
-            .catch((err) => {
-                res.send(err);
-            })
+        if (row.date !== undefined) {
+            models.sequelize.query('select distinct nickname, name, address, phone, remark, recipantId  from sell natural join sellapply natural join recipant where date = "' + row.date + '"',
+                {type: models.Sequelize.QueryTypes.SELECT})
+                .then((result) => {
+                    res.send(result);
+                })
+                .catch((err) => {
+                    res.send(err);
+                })
+        } else {
+            models.sequelize.query('select distinct nickname, name, address, phone, remark, recipantId from sell natural join sellapply natural join recipant where keep = 1',
+                {type: models.Sequelize.QueryTypes.SELECT})
+                .then((result) => {
+                    res.send(result);
+                })
+                .catch((err) => {
+                    res.send(err);
+                })
+        }
     },
     delete(req, res, row) {
         models.recipant.destroy({
