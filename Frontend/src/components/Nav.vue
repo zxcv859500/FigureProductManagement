@@ -1,5 +1,5 @@
 <template>
-    <nav class="nav">
+    <nav class="nav" v-if="show">
         <el-row type="flex" class="row-bg" justify="center">
             <el-col :span="20">
                 <el-menu
@@ -23,7 +23,12 @@
 
 <script>
     export default {
-        name: "Nav"
+        name: "Nav",
+        data() {
+            return {
+                show: true
+            }
+        }
     }
 </script>
 

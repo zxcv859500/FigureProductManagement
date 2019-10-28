@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Login from './components/login.vue'
 import BarcodeForm from './components/BarcodeForm.vue'
 import Product from './components/product.vue'
 import Sell from './components/sell.vue'
@@ -16,7 +17,12 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: { name: 'Home' }
+      redirect: { name: 'Login' }
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      components: { default: Login }
     },
     {
       path: '/home',
