@@ -112,6 +112,16 @@
                 tableData: []
             }
         },
+        created() {
+            let token = this.$store.getters.getToken
+            this.$axios.post('api/user/auth', {
+                token
+            }).then((res) => {
+                if (res.data.status === 'fail') {
+                    this.$router.push('/no-auth');
+                }
+            });
+        },
         methods: {
             load() {
                 this.$axios.get('/api/recipant/list')
