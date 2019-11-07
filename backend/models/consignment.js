@@ -16,13 +16,19 @@ module.exports = (sequelize) => {
             type: Sequelize.STRING,
             notNull: true
         },
-        price: {
+        acceptPrice: {
             type: Sequelize.INTEGER,
             notNull: true
         },
         recipantId: {
             type: Sequelize.INTEGER,
             notNull: true
+        },
+        sold: {
+            type: Sequelize.BOOLEAN
+        },
+        deposit: {
+            type: Sequelize.INTEGER
         }
     }, {
         classMethods: {},

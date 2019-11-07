@@ -104,7 +104,8 @@
             <el-table-column
                     align="right">
                 <template slot-scope="scope">
-                    <el-button @click="handleEdit(scope.row)" type="text" size="small">Edit</el-button>
+                    <el-button @click="keep(scope.row)" size="small">보관</el-button>
+                    <el-button @click="handleEdit(scope.row)" size="small">수정</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -112,221 +113,249 @@
 </template>
 
 <script>
-export default {
-    name: "send",
-    data() {
-        return {
-            tableData: [],
-            date: '',
-            totalRestPrice: 0
-        }
-    },
-    methods: {
-        loadRecipant() {
-            let today;
-            if (this.date === "") today = new Date().format('yyyy-MM-dd');
-            else today = this.date.format('yyyy-MM-dd');
-            this.$axios.post('/api/send/list', { today: today })
-                .then((res) => {
-                    this.tableData = [];
-                    this.totalRestPrice = 0;
-                    let count = 1;
-                    res.data.forEach((ele) => {
-                        const newData = {
-                            id: count,
-                            recipantId: ele.recipantId,
-                            nickname: ele.nickname,
-                            name: ele.name,
-                            address: ele.address,
-                            phone: ele.phone,
-                            remark: ele.remark,
-                            totalPrice: '',
-                            restPrice: '',
-                            data: {
-                                auction: [],
-                                prize: []
+    export default {
+        name: "send",
+        data() {
+            return {
+                tableData: [],
+                date: '',
+                totalRestPrice: 0
+            }
+        },
+        created() {
+            let token = this.$store.getters.getToken
+            this.$axios.post('api/user/auth', {
+                token
+            }).then((res) => {
+                if (res.data.status === 'fail') {
+                    this.$router.push('/no-auth');
+                }
+            });
+        },
+        methods: {
+            loadRecipant() {
+                let today;
+                if (this.date === "") today = new Date().format('yyyy-MM-dd');
+                else today = this.date.format('yyyy-MM-dd');
+                this.$axios.post('/api/send/list', { today: today })
+                    .then((res) => {
+                        this.tableData = [];
+                        this.totalRestPrice = 0;
+                        let count = 1;
+                        res.data.forEach((ele) => {
+                            const newData = {
+                                id: count,
+                                recipantId: ele.recipantId,
+                                nickname: ele.nickname,
+                                name: ele.name,
+                                address: ele.address,
+                                phone: ele.phone,
+                                remark: ele.remark,
+                                totalPrice: '',
+                                restPrice: '',
+                                data: {
+                                    auction: [],
+                                    prize: []
+                                }
+                            };
+                            count++;
+                            this.tableData.push(newData);
+                        });
+
+                        this.tableData.forEach(element => {
+                            this.getProps(element);
+                        })
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    })
+            },
+            getProps(row) {
+                let today;
+                if (this.date === "") today = new Date().format('yyyy-MM-dd');
+                else today = this.date.format('yyyy-MM-dd');
+                this.$axios.post('/api/send/props', { today: today, recipantId: row.recipantId })
+                    .then((res) => {
+                        row.data.auction = [];
+                        row.data.prize = [];
+                        let totalPrice = 0;
+                        let restPrice = 0;
+                        res.data.forEach((ele) => {
+                            const newData = {
+                                sellId: ele.sellId,
+                                date: ele.date,
+                                name: ele.name,
+                                actualPrice: ele.actualPrice,
+                                deposit: ele.deposit
+                            };
+                            if (newData.actualPrice === 0) {
+                                newData.actualPrice = "경품";
+                                row.data.prize.push(newData);
+                            } else {
+                                if (newData.deposit === 0)
+                                    restPrice += newData.actualPrice;
+                                totalPrice += newData.actualPrice;
+                                newData.actualPrice = newData.actualPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                                row.data.auction.push(newData);
                             }
-                        };
-                        count++;
-                        this.tableData.push(newData);
-                    });
-
-                    this.tableData.forEach(element => {
-                        this.getProps(element);
+                        });
+                        this.totalRestPrice += restPrice;
+                        totalPrice = totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
+                        restPrice = restPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
+                        row.totalPrice = '(합계 : ' + totalPrice + ')';
+                        row.restPrice = restPrice;
                     })
-                })
-                .catch((err) => {
-                    console.log(err);
-                })
-        },
-        getProps(row) {
-            let today;
-            if (this.date === "") today = new Date().format('yyyy-MM-dd');
-            else today = this.date.format('yyyy-MM-dd');
-            this.$axios.post('/api/send/props', { today: today, recipantId: row.recipantId })
-                .then((res) => {
-                    row.data.auction = [];
-                    row.data.prize = [];
-                    let totalPrice = 0;
-                    let restPrice = 0;
-                    res.data.forEach((ele) => {
-                        const newData = {
-                            sellId: ele.sellId,
-                            date: ele.date,
-                            name: ele.name,
-                            actualPrice: ele.actualPrice,
-                            deposit: ele.deposit
-                        };
-                        if (newData.actualPrice === 0) {
-                            newData.actualPrice = "경품";
-                            row.data.prize.push(newData);
-                        } else {
-                            if (newData.deposit === 0)
-                                restPrice += newData.actualPrice;
-                            totalPrice += newData.actualPrice;
-                            newData.actualPrice = newData.actualPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                            row.data.auction.push(newData);
-                        }
-                    });
-                    this.totalRestPrice += restPrice;
-                    totalPrice = totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
-                    restPrice = restPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
-                    row.totalPrice = '(합계 : ' + totalPrice + ')';
-                    row.restPrice = restPrice;
-                })
-        },
-        sortBy(a, b) {
-            if (a.id > b.id) return 1;
-            else if (a.id < b.id) return -1;
-            else return 0;
-        },
-        handleDeposit(row) {
-            const data = {
-                sellId: row.sellId
-            };
-            this.$axios.post('/api/send/deposit', data)
-                .then(() => {
-                    /*
-                    this.$message({
-                        message: "입금 완료",
-                        type: "success"
-                    });
-                    */
-                    this.tableData.forEach(element => {
-                        this.getProps(element);
-                    });
-                })
-                .catch((err) => {
-                    this.$message.error("입금 실패 " + err);
-                })
-        },
-        handleCancel(row) {
-            const data = {
-                sellId: row.sellId
-            };
-            this.$axios.post('/api/send/cancel', data)
-                .then(() => {
-                    /*
-                    this.$message({
-                        message: "취소 완료",
-                        type: "success"
-                    });
-                    */
-                    this.tableData.forEach(element => {
-                        this.getProps(element);
-                    })
-                })
-                .catch((err) => {
-                    this.$message.error("취소 실패 " + err);
-                })
-        },
-        handleEdit(row) {
-            this.$prompt('수정할 내용을 입력해주세요.', '비고 수정', {
-                confirmButtonText: '확인',
-                cancelButtonText: "취소",
-            }).then(({ value }) => {
-                const form = {
-                    recipantId: row.recipantId,
-                    nickname: row.nickname,
-                    name: row.name,
-                    address: row.address,
-                    phone: row.phone,
-                    remark: value
+            },
+            sortBy(a, b) {
+                if (a.id > b.id) return 1;
+                else if (a.id < b.id) return -1;
+                else return 0;
+            },
+            handleDeposit(row) {
+                const data = {
+                    sellId: row.sellId
                 };
-
-                this.$axios.post('/api/recipant/insert', form)
+                this.$axios.post('/api/send/deposit', data)
                     .then(() => {
                         /*
                         this.$message({
-                            message: "수정 완료",
+                            message: "입금 완료",
                             type: "success"
                         });
-                            */
-                        this.loadRecipant();
+                        */
+                        this.tableData.forEach(element => {
+                            this.getProps(element);
+                        });
                     })
                     .catch((err) => {
-                        this.$message.error("수정 실패");
-                        console.log(err);
+                        this.$message.error("입금 실패 " + err);
                     })
-            })
-        },
-        auctionClass({row}) {
-            if (row.deposit === 0) {
-                return 'row-auction';
-            } else {
-                return 'row-auctipn-deposit'
-            }
-        },
-        recipantClass({row}) {
-            if (row.restPrice === '(잔액 : 0)') {
-                return 'row-recipant-success'
-            }
-        }
-    },
-    mounted() {
-        Date.prototype.format = function (f) {
-            if (!this.valueOf()) return " ";
-            var weekKorName = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
-            var weekKorShortName = ["일", "월", "화", "수", "목", "금", "토"];
-            var weekEngName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-            var weekEngShortName = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-            var d = this;
-            return f.replace(/(yyyy|yy|MM|dd|KS|KL|ES|EL|HH|hh|mm|ss|a\/p)/gi, function ($1) {
-                switch ($1) {
-                    case "yyyy": return d.getFullYear(); // 년 (4자리)
-                    case "yy": return (d.getFullYear() % 1000).zf(2); // 년 (2자리)
-                    case "MM": return (d.getMonth() + 1).zf(2); // 월 (2자리)
-                    case "dd": return d.getDate().zf(2); // 일 (2자리)
-                    case "KS": return weekKorShortName[d.getDay()]; // 요일 (짧은 한글)
-                    case "KL": return weekKorName[d.getDay()]; // 요일 (긴 한글)
-                    case "ES": return weekEngShortName[d.getDay()]; // 요일 (짧은 영어)
-                    case "EL": return weekEngName[d.getDay()]; // 요일 (긴 영어)
-                    case "HH": return d.getHours().zf(2); // 시간 (24시간 기준, 2자리)
-                    case "hh": return ((h = d.getHours() % 12) ? h : 12).zf(2); // 시간 (12시간 기준, 2자리)
-                    case "mm": return d.getMinutes().zf(2); // 분 (2자리)
-                    case "ss": return d.getSeconds().zf(2); // 초 (2자리)
-                    case "a/p": return d.getHours() < 12 ? "오전" : "오후"; // 오전/오후 구분
-                    default: return $1;
+            },
+            handleCancel(row) {
+                const data = {
+                    sellId: row.sellId
+                };
+                this.$axios.post('/api/send/cancel', data)
+                    .then(() => {
+                        /*
+                        this.$message({
+                            message: "취소 완료",
+                            type: "success"
+                        });
+                        */
+                        this.tableData.forEach(element => {
+                            this.getProps(element);
+                        })
+                    })
+                    .catch((err) => {
+                        this.$message.error("취소 실패 " + err);
+                    })
+            },
+            handleEdit(row) {
+                this.$prompt('수정할 내용을 입력해주세요.', '비고 수정', {
+                    confirmButtonText: '확인',
+                    cancelButtonText: "취소",
+                }).then(({ value }) => {
+                    const form = {
+                        recipantId: row.recipantId,
+                        nickname: row.nickname,
+                        name: row.name,
+                        address: row.address,
+                        phone: row.phone,
+                        remark: value
+                    };
+
+                    this.$axios.post('/api/recipant/insert', form)
+                        .then(() => {
+                            /*
+                            this.$message({
+                                message: "수정 완료",
+                                type: "success"
+                            });
+                             */
+                            this.loadRecipant();
+                        })
+                        .catch((err) => {
+                            this.$message.error("수정 실패");
+                            console.log(err);
+                        })
+                })
+            },
+            auctionClass({row}) {
+                if (row.deposit === 0) {
+                    return 'row-auction';
+                } else {
+                    return 'row-auctipn-deposit'
                 }
-            });
-        };
-        String.prototype.string = function (len) { var s = '', i = 0; while (i++ < len) { s += this; } return s; };
-        String.prototype.zf = function (len) { return "0".string(len - this.length) + this; };
-        Number.prototype.zf = function (len) { return this.toString().zf(len); };
-        this.loadRecipant();
-    },
-    computed: {
-        totalRestPriceShow: function(value) {
-            let total = 0;
+            },
+            recipantClass({row}) {
+                if (row.restPrice === '(잔액 : 0)') {
+                    return 'row-recipant-success'
+                }
+            },
+            keep(row) {
+                Promise.all([
+                    row.data.auction.forEach((ele) => {
+                        this.$axios.post('/api/sell/keep', ele)
+                    }),
+                    row.data.prize.forEach((ele) => {
+                        this.$axios.post('/api/sell/keep', ele)
+                    })
+                ])
+                    .then(() => {
+                        const h = this.$createElement;
 
-            this.tableData.forEach((element) => {
-                total += Number(element.restPrice.replace(/,/gi, ''));
-            });
+                        this.$notify({
+                            title: "알림",
+                            message: h('i', { style: 'color: teal' }, '보관 완료')
+                        })
+                    })
+            }
+        },
+        mounted() {
+            Date.prototype.format = function (f) {
+                if (!this.valueOf()) return " ";
+                var weekKorName = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+                var weekKorShortName = ["일", "월", "화", "수", "목", "금", "토"];
+                var weekEngName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                var weekEngShortName = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+                var d = this;
+                return f.replace(/(yyyy|yy|MM|dd|KS|KL|ES|EL|HH|hh|mm|ss|a\/p)/gi, function ($1) {
+                    switch ($1) {
+                        case "yyyy": return d.getFullYear(); // 년 (4자리)
+                        case "yy": return (d.getFullYear() % 1000).zf(2); // 년 (2자리)
+                        case "MM": return (d.getMonth() + 1).zf(2); // 월 (2자리)
+                        case "dd": return d.getDate().zf(2); // 일 (2자리)
+                        case "KS": return weekKorShortName[d.getDay()]; // 요일 (짧은 한글)
+                        case "KL": return weekKorName[d.getDay()]; // 요일 (긴 한글)
+                        case "ES": return weekEngShortName[d.getDay()]; // 요일 (짧은 영어)
+                        case "EL": return weekEngName[d.getDay()]; // 요일 (긴 영어)
+                        case "HH": return d.getHours().zf(2); // 시간 (24시간 기준, 2자리)
+                        case "hh": return ((h = d.getHours() % 12) ? h : 12).zf(2); // 시간 (12시간 기준, 2자리)
+                        case "mm": return d.getMinutes().zf(2); // 분 (2자리)
+                        case "ss": return d.getSeconds().zf(2); // 초 (2자리)
+                        case "a/p": return d.getHours() < 12 ? "오전" : "오후"; // 오전/오후 구분
+                        default: return $1;
+                    }
+                });
+            };
+            String.prototype.string = function (len) { var s = '', i = 0; while (i++ < len) { s += this; } return s; };
+            String.prototype.zf = function (len) { return "0".string(len - this.length) + this; };
+            Number.prototype.zf = function (len) { return this.toString().zf(len); };
+            this.loadRecipant();
+        },
+        computed: {
+            totalRestPriceShow: function(value) {
+                let total = 0;
 
-            return total.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
+                this.tableData.forEach((element) => {
+                    total += Number(element.restPrice.replace(/,/gi, ''));
+                });
+
+                return total.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
+            }
         }
     }
-}
 </script>
 
 <style>

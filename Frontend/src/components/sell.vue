@@ -172,7 +172,7 @@
                                 newData.actualPrice = "경품";
                             }
                             this.tableData.push(newData);
-                        })
+                        });
                         this.onChange();
                     })
                     .catch((err) => {

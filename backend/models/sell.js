@@ -22,6 +22,12 @@ module.exports = (sequelize) => {
         },
         deposit: {
             type: Sequelize.BOOLEAN
+        },
+        consignmentId: {
+            type: Sequelize.INTEGER
+        },
+        keep: {
+            type: Sequelize.BOOLEAN
         }
     },{
         classMethods: {},

@@ -9,11 +9,12 @@ import Send from './components/send.vue'
 import Memo from './components/memo.vue'
 import Consignment from './components/consignment.vue'
 import NoAuth from './components/NoAuth.vue'
+import Keep from './components/Keep.vue'
 
 Vue.use(Router);
 
 export default new Router({
-  mode: 'history',
+  // mode: 'history',
   base: process.env.BASE_URL,
   routes: [
     {
@@ -64,6 +65,11 @@ export default new Router({
         path: '/no-auth',
         name: NoAuth,
         components: { default: NoAuth }
+    },
+    {
+      path: '/keep',
+      name: Keep,
+      components: { default: Keep }
     }
   ]
 })

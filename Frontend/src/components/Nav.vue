@@ -15,6 +15,7 @@
                     <el-menu-item index="send">배송</el-menu-item>
                     <el-menu-item index="memo">메모</el-menu-item>
                     <el-menu-item index="consignment">위탁</el-menu-item>
+                    <el-menu-item index="keep">보관</el-menu-item>
                 </el-menu>
             </el-col>
         </el-row>

@@ -22,8 +22,6 @@ router.post('/sell', function(req, res, next) {
         nickname: req.body.recipant
     };
 
-    console.log(row.date);
-
     if (!row.barcode) {
         res.status(500).send("Barcode empty");
     } else if (row.actualPrice === '') {
@@ -180,8 +178,9 @@ router.post('/consignment/list', function(req, res, next) {
 });
 
 router.post('/consignment/insert', function(req, res, next) {
-    req.body.date = new Date();
-    req.body.price = req.body.price.replace(/,/gi, '');
+    req.body.date = new Date().toLocaleDateString();
+    req.body.acceptPrice = req.body.acceptPrice.replace(/,/gi, '');
+    req.body.date = req.body.date.replace(/. /gi, '-');
 
     controller.consignment.insert(req.body)
         .then(() => {
@@ -192,6 +191,79 @@ router.post('/consignment/insert', function(req, res, next) {
         })
 });
 
+router.post('/consignment/sell', function(req, res, next) {
+    const row = {
+        consignmentId: req.body.consignmentId,
+        barcode: '',
+        actualPrice: req.body.sellPrice.replace(/,/gi, ''),
+        date: new Date(),
+        seller: req.body.nickname,
+        nickname: req.body.buyer
+    };
+
+    controller.consignment.sell(row)
+        .then(() => {
+            res.sendStatus(200);
+        })
+        .catch((err) => {
+            res.send(err);
+        })
+});
+
+router.post('/consignment/child', function(req, res, next) {
+    const row = {
+        date: req.body.date,
+        recipantId: req.body.recipantId
+    };
+
+    controller.consignment.getProps(row)
+        .then((result) => {
+            res.send(result);
+        })
+        .catch((err) => {
+            res.send(err);
+        })
+});
+
+router.post('/consignment/actualPrice', function(req, res, next) {
+   controller.consignment.actualPrice(req.body)
+       .then((result) => {
+           res.send(result);
+       })
+       .catch((err) => {
+           res.send(err);
+       })
+});
+
+router.post('/consignment/deposit', function(req, res, next) {
+    controller.consignment.deposit(req.body)
+        .then(() => {
+            res.sendStatus(200);
+        })
+        .catch((err) => {
+            res.send(err);
+        })
+});
+
+router.post('/sell/keep', function(req, res, next) {
+   controller.sell.keep(req.body)
+       .then(() => {
+           res.sendStatus(200);
+       })
+       .catch((err) => {
+           res.send(err);
+       })
+});
+
+router.post('/sell/send', function(req, res, next) {
+   controller.sell.send(req.body)
+       .then(() => {
+           res.sendStatus(200);
+       })
+       .catch((err) => {
+           res.send(err);
+       })
+});
 router.post('/user/login', function(req, res, next) {
     const userId = req.body.userId;
     const userPw = req.body.userPw;
@@ -224,7 +296,8 @@ router.post('/user/auth', function(req, res, next) {
             
         controller.user.auth(req, res, row);
     });
-});
+})
+
 
 Date.prototype.format = function (f) {
     if (!this.valueOf()) return " ";
