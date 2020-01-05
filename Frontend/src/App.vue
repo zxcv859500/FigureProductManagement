@@ -3,20 +3,20 @@
     <el-header>
       <navigation></navigation>
     </el-header>
-    <el-main class="barcode-form">
+    <el-main class="Login">
       <router-view></router-view>
     </el-main>
   </div>
 </template>
 
 <script>
-import BarcodeForm from './components/BarcodeForm.vue'
+import login from './components/login.vue'
 import navigation from './components/Nav.vue'
 
 export default {
   name: 'app',
   components: {
-    BarcodeForm,
+    login,
     navigation
   }
 }

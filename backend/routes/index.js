@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var controller = require('../controllers/index');
+var jwt = require('jsonwebtoken');
+const secret = 'secret'
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -262,6 +264,40 @@ router.post('/sell/send', function(req, res, next) {
            res.send(err);
        })
 });
+router.post('/user/login', function(req, res, next) {
+    const userId = req.body.userId;
+    const userPw = req.body.userPw;
+    const token = jwt.sign({
+        userId
+    }, secret);
+    const row = {
+        userId,
+        userPw,
+        token
+    };
+
+    controller.user.login(req, res, row);
+});
+
+router.post('/user/auth', function(req, res, next) {
+    jwt.verify(req.body.token, secret, (err, decoded) => {
+        let row;
+        if (err) {
+            row = {
+                status: 'fail',
+                token: err
+            };
+        } else {
+            row = {
+                status: 'success',
+                token: decoded
+            }
+        }
+            
+        controller.user.auth(req, res, row);
+    });
+})
+
 
 Date.prototype.format = function (f) {
     if (!this.valueOf()) return " ";

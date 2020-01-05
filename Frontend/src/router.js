@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Login from './components/login.vue'
 import BarcodeForm from './components/BarcodeForm.vue'
 import Product from './components/product.vue'
 import Sell from './components/sell.vue'
@@ -7,6 +8,7 @@ import Recipant from './components/recipant.vue'
 import Send from './components/send.vue'
 import Memo from './components/memo.vue'
 import Consignment from './components/consignment.vue'
+import NoAuth from './components/NoAuth.vue'
 import Keep from './components/Keep.vue'
 
 Vue.use(Router);
@@ -17,7 +19,12 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: { name: 'Home' }
+      redirect: { name: 'Login' }
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      components: { default: Login }
     },
     {
       path: '/home',
@@ -53,6 +60,11 @@ export default new Router({
       path: '/consignment',
       name: Consignment,
       components: { default: Consignment }
+    },
+    {
+        path: '/no-auth',
+        name: NoAuth,
+        components: { default: NoAuth }
     },
     {
       path: '/keep',

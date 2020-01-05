@@ -1,5 +1,5 @@
 <template>
-    <nav class="nav">
+    <nav class="nav" v-if="show">
         <el-row type="flex" class="row-bg" justify="center">
             <el-col :span="20">
                 <el-menu
@@ -23,9 +23,24 @@
 </template>
 
 <script>
-    export default {
-        name: "Nav"
+import bus from '../bus'
+
+export default {
+    name: "Nav",
+    data() {
+        return {
+            show: false
+        }
+    },
+    created() {
+        bus.$on('show', () => {
+            this.show = true;
+        });
+        bus.$on('no-show', () => {
+            this.show = false;
+        })
     }
+}
 </script>
 
 <style scoped>
